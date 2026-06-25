@@ -1,0 +1,74 @@
+# config/corridors.yaml
+# Import corridors carrying crude to India's west/east coast refineries.
+# baseline_share = fraction of India's total crude imports that typically
+# transit this corridor. Figures approximate India's ~4.6-4.7 mb/d crude
+# import volume (FY24, PPAC).
+#
+# source: PPAC "Ready Reckoner" import mix; ET Hackathon brief PS2 figures
+#   (88% import dependence, ~40-45% of imports via Strait of Hormuz).
+# transit_days = typical laden voyage to Indian west-coast ports (Sikka/
+#   Vadinar/Mumbai) at ~13 kn; approximate.
+
+corridors:
+  - id: hormuz
+    name: Strait of Hormuz
+    chokepoint: { name: Strait of Hormuz, lat: 26.57, lon: 56.25 }
+    # source: brief PS2 — 40-45% of India's crude via Hormuz. Midpoint used.
+    baseline_share: 0.43
+    transit_days: 6
+    load_ports: [Basra, Kharg Island, Ras Tanura, Fujairah, Jebel Dhanna]
+    # Arc drawn from Gulf load area to Sikka (Jamnagar) for the map.
+    origin: { lat: 27.5, lon: 51.5 }
+    destination: { lat: 22.28, lon: 69.0 }
+    approx: true
+
+  - id: red_sea
+    name: Red Sea / Suez (via Bab-el-Mandeb)
+    chokepoint: { name: Bab-el-Mandeb, lat: 12.58, lon: 43.33 }
+    # source: PPAC — West African & Mediterranean barrels via Suez/Bab-el-Mandeb.
+    baseline_share: 0.11
+    transit_days: 16
+    load_ports: [Sidi Kerir, Ceyhan, Es Sider]
+    origin: { lat: 15.0, lon: 42.0 }
+    destination: { lat: 20.0, lon: 71.0 }
+    approx: true
+
+  - id: cape
+    name: Cape of Good Hope (West Africa / Atlantic)
+    chokepoint: { name: Cape of Good Hope, lat: -34.36, lon: 18.47 }
+    # source: PPAC — Nigerian/Angolan grades routed around the Cape when Suez
+    #   is disrupted; baseline share modest but strategically important.
+    baseline_share: 0.14
+    transit_days: 22
+    load_ports: [Bonny, Forcados, Girassol FPSO]
+    origin: { lat: 4.0, lon: 7.0 }
+    destination: { lat: 18.0, lon: 72.0 }
+    approx: true
+
+  - id: atlantic_usgulf
+    name: Atlantic / US Gulf
+    chokepoint: { name: US Gulf loading, lat: 29.0, lon: -94.0 }
+    # source: PPAC FY24 — US crude (WTI Midland) now a top-5 supplier to India.
+    baseline_share: 0.09
+    transit_days: 40
+    load_ports: [Corpus Christi, Houston, LOOP]
+    origin: { lat: 27.5, lon: -95.0 }
+    destination: { lat: 13.0, lon: 80.3 }   # Chennai / east-coast landing
+    approx: true
+
+  - id: pacific_fareast
+    name: Pacific / Far East
+    chokepoint: { name: Malacca Strait, lat: 2.5, lon: 101.0 }
+    # source: PPAC — smaller volumes of Far-East / Sakhalin-type grades.
+    baseline_share: 0.06
+    transit_days: 12
+    load_ports: [Kozmino, Malaysia]
+    origin: { lat: 5.0, lon: 100.0 }
+    destination: { lat: 13.0, lon: 80.3 }
+    approx: true
+
+# Corridor -> scenario auto-trigger mapping (used by the scenario auto-trigger
+# rule in agents/scenario.py when a corridor risk score crosses threshold).
+auto_trigger:
+  hormuz: hormuz_50
+  red_sea: red_sea_full

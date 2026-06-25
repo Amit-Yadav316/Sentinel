@@ -1,0 +1,114 @@
+# config/refineries.yaml
+# Major Indian refineries. capacity_kbd = nameplate crude throughput in
+# thousand barrels/day. Grade tolerance is the sulfur/API window the primary
+# CDUs are configured for (sour vs sweet, medium vs light).
+#
+# source: PPAC "Refinery capacity" table + operator disclosures (RIL, IOCL,
+#   BPCL, HPCL, MRPL, CPCL). Capacities rounded; marked approx where the
+#   public number blends multiple trains. Grade windows are indicative
+#   configuration envelopes, not contractual specs.
+
+refineries:
+  - id: jamnagar_dta
+    name: Jamnagar DTA (Reliance)
+    operator: Reliance Industries
+    coast: west
+    port: Sikka
+    capacity_kbd: 660
+    # High-conversion, deep-sour capable coker complex (Nelson complexity ~21);
+    # processes very heavy sour grades up to ~4% sulfur.
+    grade_tolerance: { api_min: 18, api_max: 42, sulfur_max_pct: 4.0 }
+    corridor_dependence: { hormuz: 0.6, cape: 0.2, red_sea: 0.1, atlantic_usgulf: 0.1 }
+    approx: true
+
+  - id: jamnagar_sez
+    name: Jamnagar SEZ (Reliance)
+    operator: Reliance Industries
+    coast: west
+    port: Sikka
+    capacity_kbd: 700
+    grade_tolerance: { api_min: 18, api_max: 45, sulfur_max_pct: 4.0 }
+    corridor_dependence: { hormuz: 0.5, cape: 0.2, atlantic_usgulf: 0.2, red_sea: 0.1 }
+    approx: true
+
+  - id: vadinar
+    name: Vadinar (Nayara Energy)
+    operator: Nayara Energy
+    coast: west
+    port: Vadinar
+    capacity_kbd: 405
+    # Historically heavy Urals intake post-2022 (sanction caveat downstream).
+    grade_tolerance: { api_min: 20, api_max: 40, sulfur_max_pct: 3.0 }
+    corridor_dependence: { hormuz: 0.45, red_sea: 0.35, cape: 0.2 }
+    approx: true
+
+  - id: paradip
+    name: Paradip (IOCL)
+    operator: Indian Oil
+    coast: east
+    port: Paradip
+    capacity_kbd: 300
+    grade_tolerance: { api_min: 22, api_max: 38, sulfur_max_pct: 3.2 }
+    corridor_dependence: { hormuz: 0.5, red_sea: 0.2, pacific_fareast: 0.15, atlantic_usgulf: 0.15 }
+    approx: true
+
+  - id: jamnagar_note
+    name: Kochi (BPCL)
+    operator: Bharat Petroleum
+    coast: west
+    port: Kochi
+    capacity_kbd: 310
+    grade_tolerance: { api_min: 24, api_max: 40, sulfur_max_pct: 2.5 }
+    corridor_dependence: { hormuz: 0.55, cape: 0.25, red_sea: 0.2 }
+    approx: true
+
+  - id: panipat
+    name: Panipat (IOCL)
+    operator: Indian Oil
+    coast: inland   # fed via Mundra/Vadinar pipelines
+    port: Mundra
+    capacity_kbd: 300
+    grade_tolerance: { api_min: 26, api_max: 40, sulfur_max_pct: 2.2 }
+    corridor_dependence: { hormuz: 0.6, atlantic_usgulf: 0.2, red_sea: 0.2 }
+    approx: true
+
+  - id: mangalore
+    name: Mangalore (MRPL)
+    operator: MRPL
+    coast: west
+    port: New Mangalore
+    capacity_kbd: 300
+    grade_tolerance: { api_min: 26, api_max: 42, sulfur_max_pct: 2.5 }
+    corridor_dependence: { hormuz: 0.65, cape: 0.15, atlantic_usgulf: 0.2 }
+    approx: true
+
+  - id: chennai
+    name: Chennai (CPCL)
+    operator: CPCL
+    coast: east
+    port: Chennai
+    capacity_kbd: 210
+    grade_tolerance: { api_min: 24, api_max: 40, sulfur_max_pct: 2.8 }
+    corridor_dependence: { hormuz: 0.55, pacific_fareast: 0.2, atlantic_usgulf: 0.25 }
+    approx: true
+
+  - id: barauni
+    name: Barauni (IOCL)
+    operator: Indian Oil
+    coast: inland   # fed via Paradip pipeline
+    port: Paradip
+    capacity_kbd: 120
+    grade_tolerance: { api_min: 28, api_max: 40, sulfur_max_pct: 2.0 }
+    corridor_dependence: { hormuz: 0.5, red_sea: 0.25, pacific_fareast: 0.25 }
+    approx: true
+
+  - id: numaligarh
+    name: Numaligarh (NRL)
+    operator: NRL
+    coast: inland
+    port: Haldia
+    capacity_kbd: 60
+    # Light-sweet configured; low sulfur tolerance — good grade-compat contrast.
+    grade_tolerance: { api_min: 30, api_max: 45, sulfur_max_pct: 0.5 }
+    corridor_dependence: { pacific_fareast: 0.4, atlantic_usgulf: 0.3, red_sea: 0.3 }
+    approx: true
