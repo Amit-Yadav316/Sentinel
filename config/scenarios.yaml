@@ -1,0 +1,37 @@
+# config/scenarios.yaml
+# Named disruption scenarios. Each is expressed as corridor throughput
+# multipliers (1.0 = normal, 0.5 = halved, 0.0 = shut) plus optional price
+# shock params. The sim (sim/flow_model.py) consumes these directly.
+
+scenarios:
+  - name: hormuz_50
+    title: Strait of Hormuz — 50% throughput
+    description: >
+      Partial closure / heightened war-risk insurance halves effective Hormuz
+      tanker throughput. Gulf grades most exposed.
+    corridor_multipliers:
+      hormuz: 0.5
+    duration_days: 30
+    # extra spot premium added on top of the gap-derived premium ($/bbl).
+    price_shock_usd: 6.0
+
+  - name: red_sea_full
+    title: Red Sea / Suez — full suspension
+    description: >
+      Complete suspension of Suez/Bab-el-Mandeb transits; affected barrels must
+      divert around the Cape (longer transit, higher freight).
+    corridor_multipliers:
+      red_sea: 0.0
+    duration_days: 45
+    price_shock_usd: 3.0
+    reroute: red_sea_to_cape
+
+  - name: opec_cut_2mbpd
+    title: OPEC+ cut — 2 mb/d
+    description: >
+      Coordinated OPEC+ supply cut of ~2 mb/d tightens Gulf availability across
+      the board (applied as a uniform haircut to Hormuz-loaded volumes).
+    corridor_multipliers:
+      hormuz: 0.82
+    duration_days: 90
+    price_shock_usd: 8.0

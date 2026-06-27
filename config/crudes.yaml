@@ -1,0 +1,145 @@
+# config/crudes.yaml
+# Crude assays used to score grade compatibility and cost. api = API gravity
+# (deg), sulfur_pct = wt% sulfur, fob_diff_usd = typical FOB differential to
+# dated Brent ($/bbl; negative = discount). corridor = primary import corridor.
+#
+# source: public assay libraries (BP, ExxonMobil, Chevron crude assays) for
+#   API/sulfur; FOB differentials are indicative recent-cycle levels, not live
+#   quotes. Urals discount + sanction caveat per public reporting.
+
+crudes:
+  - id: basrah_medium
+    name: Basrah Medium
+    origin: Iraq
+    api: 28.5
+    sulfur_pct: 2.9
+    fob_diff_usd: -3.5
+    load_port: Basra
+    corridor: hormuz
+
+  - id: basrah_heavy
+    name: Basrah Heavy
+    origin: Iraq
+    api: 23.5
+    sulfur_pct: 3.9
+    fob_diff_usd: -6.0
+    load_port: Basra
+    corridor: hormuz
+
+  - id: arab_light
+    name: Arab Light
+    origin: Saudi Arabia
+    api: 33.0
+    sulfur_pct: 1.8
+    fob_diff_usd: -1.0
+    load_port: Ras Tanura
+    corridor: hormuz
+
+  - id: arab_heavy
+    name: Arab Heavy
+    origin: Saudi Arabia
+    api: 27.0
+    sulfur_pct: 2.9
+    fob_diff_usd: -4.5
+    load_port: Ras Tanura
+    corridor: hormuz
+
+  - id: murban
+    name: Murban
+    origin: UAE
+    api: 40.0
+    sulfur_pct: 0.79
+    fob_diff_usd: 0.5
+    load_port: Fujairah
+    corridor: hormuz   # loads inside the Gulf; Fujairah partially bypasses
+
+  - id: upper_zakum
+    name: Upper Zakum
+    origin: UAE
+    api: 34.0
+    sulfur_pct: 1.7
+    fob_diff_usd: -1.5
+    load_port: Fujairah
+    corridor: hormuz
+
+  - id: wti_midland
+    name: WTI Midland
+    origin: USA
+    api: 42.0
+    sulfur_pct: 0.4
+    fob_diff_usd: 1.5
+    load_port: Corpus Christi
+    corridor: atlantic_usgulf
+
+  - id: mars
+    name: Mars (US Gulf sour)
+    origin: USA
+    api: 30.0
+    sulfur_pct: 1.9
+    fob_diff_usd: -2.0
+    load_port: LOOP
+    corridor: atlantic_usgulf
+
+  - id: bonny_light
+    name: Bonny Light
+    origin: Nigeria
+    api: 35.0
+    sulfur_pct: 0.15
+    fob_diff_usd: 1.0
+    load_port: Bonny
+    corridor: cape
+
+  - id: forcados
+    name: Forcados
+    origin: Nigeria
+    api: 30.0
+    sulfur_pct: 0.2
+    fob_diff_usd: 0.8
+    load_port: Forcados
+    corridor: cape
+
+  - id: girassol
+    name: Girassol
+    origin: Angola
+    api: 31.0
+    sulfur_pct: 0.33
+    fob_diff_usd: 0.2
+    load_port: Girassol FPSO
+    corridor: cape
+
+  - id: tupi
+    name: Tupi (Lula)
+    origin: Brazil
+    api: 29.0
+    sulfur_pct: 0.35
+    fob_diff_usd: -0.5
+    load_port: Santos
+    corridor: cape
+
+  - id: cpc_blend
+    name: CPC Blend
+    origin: Kazakhstan
+    api: 45.0
+    sulfur_pct: 0.55
+    fob_diff_usd: -1.2
+    load_port: Novorossiysk
+    corridor: red_sea
+
+  - id: es_sider
+    name: Es Sider
+    origin: Libya
+    api: 37.0
+    sulfur_pct: 0.4
+    fob_diff_usd: -0.3
+    load_port: Es Sider
+    corridor: red_sea
+
+  - id: urals
+    name: Urals
+    origin: Russia
+    api: 31.0
+    sulfur_pct: 1.7
+    fob_diff_usd: -8.0     # heavy discount
+    load_port: Primorsk
+    corridor: red_sea
+    caveat: sanctions      # G7 price-cap / compliance flag; surfaced in UI
