@@ -1,0 +1,290 @@
+[
+  {
+    "mmsi": "419000000",
+    "name": "Delta Pride",
+    "lat": 14.765,
+    "lon": 42.282,
+    "corridor": "red_sea",
+    "synthetic": true
+  },
+  {
+    "mmsi": "419000001",
+    "name": "Front Star",
+    "lat": 14.509,
+    "lon": 42.494,
+    "corridor": "red_sea",
+    "synthetic": true
+  },
+  {
+    "mmsi": "419000002",
+    "name": "Desh Voyager",
+    "lat": 13.69,
+    "lon": 52.505,
+    "corridor": "cape",
+    "synthetic": true
+  },
+  {
+    "mmsi": "419000003",
+    "name": "Ocean Glory",
+    "lat": 6.111,
+    "lon": 17.022,
+    "corridor": "cape",
+    "synthetic": true
+  },
+  {
+    "mmsi": "419000004",
+    "name": "Desh Voyager",
+    "lat": 25.291,
+    "lon": 57.899,
+    "corridor": "hormuz",
+    "synthetic": true
+  },
+  {
+    "mmsi": "419000005",
+    "name": "Swarna Glory",
+    "lat": 12.264,
+    "lon": 41.66,
+    "corridor": "cape",
+    "synthetic": true
+  },
+  {
+    "mmsi": "419000006",
+    "name": "Swarna Pride",
+    "lat": 17.796,
+    "lon": 61.997,
+    "corridor": "red_sea",
+    "synthetic": true
+  },
+  {
+    "mmsi": "419000007",
+    "name": "Cosmos Trader",
+    "lat": 14.744,
+    "lon": 56.82,
+    "corridor": "atlantic_usgulf",
+    "synthetic": true
+  },
+  {
+    "mmsi": "419000008",
+    "name": "Maran Trader",
+    "lat": 26.034,
+    "lon": 55.865,
+    "corridor": "hormuz",
+    "synthetic": true
+  },
+  {
+    "mmsi": "419000009",
+    "name": "Pacific Glory",
+    "lat": 16.164,
+    "lon": 48.731,
+    "corridor": "red_sea",
+    "synthetic": true
+  },
+  {
+    "mmsi": "419000010",
+    "name": "Gulf Falcon",
+    "lat": 15.814,
+    "lon": 40.284,
+    "corridor": "atlantic_usgulf",
+    "synthetic": true
+  },
+  {
+    "mmsi": "419000011",
+    "name": "Gulf Star",
+    "lat": 27.107,
+    "lon": 55.794,
+    "corridor": "hormuz",
+    "synthetic": true
+  },
+  {
+    "mmsi": "419000012",
+    "name": "Desh Trader",
+    "lat": 10.202,
+    "lon": 32.65,
+    "corridor": "cape",
+    "synthetic": true
+  },
+  {
+    "mmsi": "419000013",
+    "name": "Sonangol Glory",
+    "lat": 24.19,
+    "lon": 61.459,
+    "corridor": "hormuz",
+    "synthetic": true
+  },
+  {
+    "mmsi": "419000014",
+    "name": "Nissos Pride",
+    "lat": 22.308,
+    "lon": 68.302,
+    "corridor": "hormuz",
+    "synthetic": true
+  },
+  {
+    "mmsi": "419000015",
+    "name": "Sonangol Falcon",
+    "lat": 26.954,
+    "lon": 54.454,
+    "corridor": "hormuz",
+    "synthetic": true
+  },
+  {
+    "mmsi": "419000016",
+    "name": "Front Pride",
+    "lat": 16.943,
+    "lon": 55.659,
+    "corridor": "red_sea",
+    "synthetic": true
+  },
+  {
+    "mmsi": "419000017",
+    "name": "Delta Spirit",
+    "lat": 11.145,
+    "lon": 42.129,
+    "corridor": "cape",
+    "synthetic": true
+  },
+  {
+    "mmsi": "419000018",
+    "name": "Desh Trader",
+    "lat": 25.858,
+    "lon": 60.042,
+    "corridor": "hormuz",
+    "synthetic": true
+  },
+  {
+    "mmsi": "419000019",
+    "name": "Ocean Trader",
+    "lat": 27.145,
+    "lon": 53.909,
+    "corridor": "hormuz",
+    "synthetic": true
+  },
+  {
+    "mmsi": "419000020",
+    "name": "Front Glory",
+    "lat": 27.382,
+    "lon": 55.003,
+    "corridor": "hormuz",
+    "synthetic": true
+  },
+  {
+    "mmsi": "419000021",
+    "name": "Swarna Star",
+    "lat": 26.697,
+    "lon": 54.234,
+    "corridor": "hormuz",
+    "synthetic": true
+  },
+  {
+    "mmsi": "419000022",
+    "name": "Astro Pride",
+    "lat": 23.632,
+    "lon": 66.202,
+    "corridor": "hormuz",
+    "synthetic": true
+  },
+  {
+    "mmsi": "419000023",
+    "name": "Sea Spirit",
+    "lat": 8.663,
+    "lon": 89.761,
+    "corridor": "pacific_fareast",
+    "synthetic": true
+  },
+  {
+    "mmsi": "419000024",
+    "name": "Ocean Spirit",
+    "lat": 18.776,
+    "lon": 60.277,
+    "corridor": "red_sea",
+    "synthetic": true
+  },
+  {
+    "mmsi": "419000025",
+    "name": "Olympic Pride",
+    "lat": 23.791,
+    "lon": 63.894,
+    "corridor": "hormuz",
+    "synthetic": true
+  },
+  {
+    "mmsi": "419000026",
+    "name": "Pacific Voyager",
+    "lat": 26.399,
+    "lon": 52.707,
+    "corridor": "hormuz",
+    "synthetic": true
+  },
+  {
+    "mmsi": "419000027",
+    "name": "Gulf Pride",
+    "lat": 23.772,
+    "lon": 63.193,
+    "corridor": "hormuz",
+    "synthetic": true
+  },
+  {
+    "mmsi": "419000028",
+    "name": "Astro Star",
+    "lat": 26.023,
+    "lon": 56.436,
+    "corridor": "hormuz",
+    "synthetic": true
+  },
+  {
+    "mmsi": "419000029",
+    "name": "Nordic Glory",
+    "lat": 14.81,
+    "lon": 58.842,
+    "corridor": "cape",
+    "synthetic": true
+  },
+  {
+    "mmsi": "419000030",
+    "name": "Delta Voyager",
+    "lat": 25.429,
+    "lon": 59.95,
+    "corridor": "hormuz",
+    "synthetic": true
+  },
+  {
+    "mmsi": "419000031",
+    "name": "Ocean Horizon",
+    "lat": 26.308,
+    "lon": 57.036,
+    "corridor": "hormuz",
+    "synthetic": true
+  },
+  {
+    "mmsi": "419000032",
+    "name": "Maran Horizon",
+    "lat": 26.482,
+    "lon": 55.31,
+    "corridor": "hormuz",
+    "synthetic": true
+  },
+  {
+    "mmsi": "419000033",
+    "name": "Front Pride",
+    "lat": 15.34,
+    "lon": 62.881,
+    "corridor": "cape",
+    "synthetic": true
+  },
+  {
+    "mmsi": "419000034",
+    "name": "Ocean Falcon",
+    "lat": 14.66,
+    "lon": 53.753,
+    "corridor": "atlantic_usgulf",
+    "synthetic": true
+  },
+  {
+    "mmsi": "419000035",
+    "name": "Olympic Spirit",
+    "lat": 24.316,
+    "lon": -66.314,
+    "corridor": "atlantic_usgulf",
+    "synthetic": true
+  }
+]
