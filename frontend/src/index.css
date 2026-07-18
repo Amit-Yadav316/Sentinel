@@ -1,0 +1,40 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html,
+  body,
+  #root {
+    height: 100%;
+  }
+  body {
+    @apply bg-ink-900 text-slate-200 antialiased;
+    font-feature-settings: "tnum" 1;
+  }
+}
+
+@layer components {
+  .card {
+    @apply rounded-xl border border-ink-600 bg-ink-800/70 backdrop-blur;
+  }
+  .chip {
+    @apply inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[11px] font-medium;
+  }
+  .stat-label {
+    @apply text-[11px] uppercase tracking-wider text-slate-400;
+  }
+  .num {
+    @apply font-mono tabular-nums;
+  }
+}
+
+/* Pulsing dot for live/simulated indicators */
+@keyframes pulse-ring {
+  0% { box-shadow: 0 0 0 0 rgba(56, 189, 248, 0.5); }
+  70% { box-shadow: 0 0 0 6px rgba(56, 189, 248, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(56, 189, 248, 0); }
+}
+.live-dot {
+  animation: pulse-ring 2s infinite;
+}
