@@ -11,8 +11,10 @@ const LAND = landRaw as unknown as number[][][][][];
 // (US Gulf .. Malacca, Cape .. Gulf). No basemap tiles => fully offline.
 const W = 1000;
 const H = 560;
-const LON = [-102, 108];
-const LAT = [-40, 46];
+// Focused on the Indian Ocean theatre (Red Sea → Malacca) where the demo lives;
+// long-haul Cape/Atlantic corridors enter from the map edge.
+const LON = [30, 103];
+const LAT = [-8, 40];
 
 function project(lon: number, lat: number): [number, number] {
   const x = ((lon - LON[0]) / (LON[1] - LON[0])) * W;
@@ -30,7 +32,7 @@ function arcPath(o: { lat: number; lon: number }, d: { lat: number; lon: number 
   const len = Math.hypot(dx, dy) || 1;
   const nx = -dy / len;
   const ny = dx / len;
-  const bow = 0.18 * len;
+  const bow = Math.min(0.18 * len, 90); // cap so off-map long-haul arcs stay sane
   return `M ${x0} ${y0} Q ${mx + nx * bow} ${my + ny * bow} ${x1} ${y1}`;
 }
 
