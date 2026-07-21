@@ -1,0 +1,523 @@
+<style>
+  * { box-sizing: border-box; }
+
+  :root {
+    --ground: #e9edf1;
+    --surface: #ffffff;
+    --panel: #f4f6f9;
+    --ink: #0e1621;
+    --ink-2: #43516180;
+    --ink-2s: #465364;
+    --ink-3: #6b7887;
+    --line: #d8dfe7;
+    --accent: #1c5cab;
+    --accent-bright: #2a78d6;
+    --accent-soft: #e9f1fb;
+    --navy: #0b1f38;
+    --navy-2: #0e2a47;
+    --good: #0ca30c;
+    --warn: #d98a00;
+    --warn-fill: #fab219;
+    --serious: #d5622f;
+    --crit: #d03b3b;
+    --font-display: "Bahnschrift", "DIN Condensed", "Oswald", "Arial Narrow", system-ui, sans-serif;
+    --font-body: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    --font-mono: "Cascadia Code", ui-monospace, "SF Mono", Consolas, monospace;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --ground: #070d15;
+      --surface: #0f1826;
+      --panel: #142031;
+      --ink: #eef2f7;
+      --ink-2: #9fb0c3;
+      --ink-2s: #b3c1d1;
+      --ink-3: #7e8da0;
+      --line: #22303f;
+      --accent: #4a90e2;
+      --accent-bright: #5aa0ef;
+      --accent-soft: #12233a;
+      --warn: #fab219;
+    }
+  }
+  :root[data-theme="dark"] {
+    --ground: #070d15; --surface: #0f1826; --panel: #142031;
+    --ink: #eef2f7; --ink-2: #9fb0c3; --ink-2s: #b3c1d1; --ink-3: #7e8da0;
+    --line: #22303f; --accent: #4a90e2; --accent-bright: #5aa0ef;
+    --accent-soft: #12233a; --warn: #fab219;
+  }
+
+  html, body { margin: 0; height: 100%; background: var(--ground); }
+  body {
+    font-family: var(--font-body);
+    color: var(--ink);
+    -webkit-font-smoothing: antialiased;
+    overflow: hidden;
+  }
+
+  /* ---------- deck mechanics ---------- */
+  .deck { position: fixed; inset: 0; overflow: hidden; }
+  .track {
+    display: flex; height: 100%; width: 100%;
+    transition: transform .5s cubic-bezier(.7,.08,.2,1);
+  }
+  .slide {
+    position: relative; flex: 0 0 100%; height: 100%;
+    display: flex; align-items: center; justify-content: center;
+    padding: min(6vh, 60px) min(7vw, 96px);
+  }
+  .stage {
+    width: 100%; max-width: 1180px; height: 100%;
+    display: flex; flex-direction: column; justify-content: center;
+    gap: 26px;
+  }
+
+  /* eyebrow + footer chrome */
+  .eyebrow {
+    display: flex; align-items: center; gap: 12px;
+    font-family: var(--font-mono); font-size: 12px; letter-spacing: .16em;
+    text-transform: uppercase; color: var(--ink-3);
+  }
+  .eyebrow .tick { width: 26px; height: 1px; background: var(--accent); }
+  .foot {
+    position: absolute; left: min(7vw,96px); right: min(7vw,96px); bottom: 26px;
+    display: flex; justify-content: space-between; align-items: center;
+    font-family: var(--font-mono); font-size: 11px; letter-spacing: .08em;
+    color: var(--ink-3); border-top: 1px solid var(--line); padding-top: 10px;
+  }
+  .foot b { color: var(--ink-2s); font-weight: 600; }
+
+  h1.head {
+    font-family: var(--font-display); font-weight: 600;
+    font-size: clamp(2rem, 4.6vw, 3.5rem); line-height: 1.02;
+    letter-spacing: .01em; margin: 0; text-wrap: balance; color: var(--ink);
+  }
+  h1.head .em { color: var(--accent); }
+  .sub { font-size: clamp(1rem, 1.5vw, 1.22rem); color: var(--ink-2s); max-width: 60ch; line-height: 1.5; }
+  .lede { font-size: 1.05rem; color: var(--ink-2s); line-height: 1.55; max-width: 62ch; }
+
+  /* stat tiles */
+  .stat-row { display: grid; gap: 18px; }
+  .cols-3 { grid-template-columns: repeat(3, 1fr); }
+  .cols-4 { grid-template-columns: repeat(4, 1fr); }
+  .cols-2 { grid-template-columns: repeat(2, 1fr); }
+  .tile {
+    background: var(--surface); border: 1px solid var(--line); border-radius: 14px;
+    padding: 22px 22px 20px; display: flex; flex-direction: column; gap: 6px;
+    box-shadow: 0 1px 2px rgba(11,22,33,.05);
+  }
+  .tile .big {
+    font-family: var(--font-display); font-weight: 600;
+    font-size: clamp(2.4rem, 5.2vw, 4rem); line-height: .95; letter-spacing: .01em;
+    font-variant-numeric: tabular-nums; color: var(--ink);
+  }
+  .tile .big.accent { color: var(--accent); }
+  .tile .big.crit { color: var(--crit); }
+  .tile .big.warn { color: var(--warn); }
+  .tile .cap { font-size: .92rem; color: var(--ink-2s); line-height: 1.4; }
+  .tile .unit { font-size: .95rem; color: var(--ink-3); font-weight: 500; }
+  .tile .mono-lab { font-family: var(--font-mono); font-size: 10.5px; letter-spacing: .14em; text-transform: uppercase; color: var(--ink-3); }
+
+  .card {
+    background: var(--surface); border: 1px solid var(--line); border-radius: 14px;
+    padding: 20px 22px; box-shadow: 0 1px 2px rgba(11,22,33,.05);
+  }
+  .grid { display: grid; gap: 18px; }
+
+  /* pills / chips */
+  .chip {
+    display: inline-flex; align-items: center; gap: 6px;
+    font-family: var(--font-mono); font-size: 11px; letter-spacing: .04em;
+    padding: 3px 9px; border-radius: 999px; border: 1px solid var(--line);
+    background: var(--panel); color: var(--ink-2s);
+  }
+  .chip.blue { background: var(--accent-soft); border-color: transparent; color: var(--accent); }
+  .chip.crit { background: #fbe9e9; border-color: transparent; color: var(--crit); }
+  .dot { width: 7px; height: 7px; border-radius: 50%; }
+
+  /* pipeline / flow */
+  .flow { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0; align-items: stretch; }
+  .flow .node {
+    background: var(--surface); border: 1px solid var(--line); border-radius: 12px;
+    padding: 16px 16px; position: relative; z-index: 1;
+  }
+  .flow .node .n { font-family: var(--font-mono); font-size: 11px; color: var(--accent); letter-spacing: .1em; }
+  .flow .node h4 { margin: 6px 0 4px; font-family: var(--font-display); font-weight: 600; font-size: 1.12rem; letter-spacing: .01em; color: var(--ink); }
+  .flow .node p { margin: 0; font-size: .82rem; color: var(--ink-2s); line-height: 1.4; }
+  .flow .arrow { align-self: center; color: var(--accent); font-size: 22px; text-align: center; }
+
+  ul.clean { margin: 0; padding: 0; list-style: none; display: grid; gap: 12px; }
+  ul.clean li { display: grid; grid-template-columns: 20px 1fr; gap: 12px; font-size: 1rem; color: var(--ink-2s); line-height: 1.45; }
+  ul.clean li .mk { color: var(--accent); font-weight: 700; }
+  ul.clean li b { color: var(--ink); font-weight: 600; }
+
+  .formula {
+    font-family: var(--font-mono); font-size: .92rem; color: var(--ink-2s);
+    background: var(--panel); border: 1px solid var(--line); border-left: 3px solid var(--accent);
+    border-radius: 8px; padding: 12px 14px; line-height: 1.7; overflow-x: auto;
+  }
+  .formula b { color: var(--ink); }
+
+  /* dark bookend slides */
+  .slide.dark { background:
+      radial-gradient(120% 120% at 15% 0%, #12365f 0%, var(--navy-2) 42%, var(--navy) 100%); }
+  .slide.dark .eyebrow, .slide.dark .foot { color: #7c98ba; }
+  .slide.dark .foot { border-color: #ffffff22; }
+  .slide.dark .foot b { color: #c7d8ec; }
+  .slide.dark h1.head, .slide.dark .big { color: #f4f8fd; }
+  .slide.dark .sub, .slide.dark .lede { color: #b9cbe0; }
+  .slide.dark .tile { background: #ffffff0e; border-color: #ffffff20; box-shadow: none; }
+  .slide.dark .tile .cap { color: #b9cbe0; }
+  .slide.dark .chip { background: #ffffff12; border-color: #ffffff22; color: #cfe0f2; }
+  .slide.dark .rule { background: #ffffff22; }
+
+  .wordmark { display: flex; align-items: center; gap: 14px; }
+  .wordmark .mark {
+    width: 46px; height: 46px; border-radius: 11px; display: grid; place-items: center;
+    background: linear-gradient(160deg, var(--accent-bright), var(--accent)); color: #fff;
+  }
+  .brandname {
+    font-family: var(--font-display); font-weight: 600; letter-spacing: .16em;
+    font-size: clamp(2.6rem, 7vw, 5.4rem); line-height: 1; color: #f4f8fd;
+  }
+  .tagline { font-size: clamp(1.1rem, 2vw, 1.5rem); color: #cfe0f2; font-weight: 300; letter-spacing: .01em; }
+
+  .rule { height: 1px; background: var(--line); }
+  .two { display: grid; grid-template-columns: 1.05fr .95fr; gap: 34px; align-items: center; }
+  .klabel { font-family: var(--font-mono); font-size: 11px; letter-spacing: .12em; text-transform: uppercase; color: var(--ink-3); margin-bottom: 8px; }
+
+  /* climb chart */
+  .climb { display: flex; align-items: flex-end; gap: 10px; height: 210px; }
+  .climb .bar { flex: 1; display: flex; flex-direction: column; justify-content: flex-end; align-items: center; gap: 6px; }
+  .climb .bar .fill { width: 100%; border-radius: 5px 5px 0 0; }
+  .climb .bar .v { font-family: var(--font-mono); font-size: 12px; font-weight: 600; color: var(--ink-2s); font-variant-numeric: tabular-nums; }
+  .thr { position: relative; }
+
+  /* nav ui */
+  .nav { position: fixed; z-index: 20; bottom: 20px; left: 50%; transform: translateX(-50%);
+    display: flex; align-items: center; gap: 14px; background: var(--surface);
+    border: 1px solid var(--line); border-radius: 999px; padding: 7px 12px;
+    box-shadow: 0 6px 24px rgba(11,22,33,.12); font-family: var(--font-mono); }
+  .nav button { border: 0; background: transparent; color: var(--ink-2s); cursor: pointer;
+    font-size: 17px; width: 26px; height: 26px; border-radius: 50%; display: grid; place-items: center; }
+  .nav button:hover { background: var(--accent-soft); color: var(--accent); }
+  .nav .count { font-size: 12px; color: var(--ink-3); letter-spacing: .1em; font-variant-numeric: tabular-nums; }
+  .progress { position: fixed; top: 0; left: 0; height: 3px; background: var(--accent); z-index: 20; transition: width .5s ease; }
+  .hint { position: fixed; bottom: 22px; right: 22px; z-index: 20; font-family: var(--font-mono);
+    font-size: 10.5px; letter-spacing: .08em; color: var(--ink-3); }
+
+  @media (prefers-reduced-motion: reduce) {
+    .track { transition: none; } .progress { transition: none; }
+  }
+
+  /* ---------- print → one slide per landscape page ---------- */
+  @media print {
+    @page { size: 1280px 720px; margin: 0; }
+    html, body { overflow: visible; height: auto; background: #fff; }
+    .deck { position: static; overflow: visible; }
+    .track { display: block; transform: none !important; }
+    .slide { page-break-after: always; height: 720px; width: 1280px; }
+    .nav, .hint, .progress { display: none !important; }
+  }
+</style>
+
+<div class="progress" id="progress"></div>
+<div class="deck">
+  <div class="track" id="track">
+
+    <!-- 1 · TITLE -->
+    <section class="slide dark">
+      <div class="stage" style="gap:30px;">
+        <div class="eyebrow"><span class="tick"></span> Strategic Operations Brief · ET AI Hackathon 2026 · PS2</div>
+        <div class="wordmark">
+          <div class="mark"><svg width="26" height="26" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2 4 6v6c0 5 3.4 8.5 8 10 4.6-1.5 8-5 8-10V6l-8-4Z"/></svg></div>
+          <div class="brandname">SENTINEL</div>
+        </div>
+        <div class="tagline">Signal to executable recommendation in <b style="color:#fff;font-weight:600;">under 5 minutes.</b></div>
+        <div class="sub">An AI crisis-to-decision engine for India's crude-oil supply chain — it watches geopolitical &amp; maritime signals, simulates disruption, and issues ranked, grade-checked procurement reroutes.</div>
+        <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:4px;">
+          <span class="chip"><span class="dot" style="background:#5aa0ef;"></span> Watch</span>
+          <span class="chip"><span class="dot" style="background:var(--warn-fill);"></span> Simulate</span>
+          <span class="chip"><span class="dot" style="background:#4ade80;"></span> Decide</span>
+        </div>
+      </div>
+      <div class="foot"><span>SENTINEL</span><span><b>Energy Supply Chain Resilience</b> for Import-Dependent Economies</span></div>
+    </section>
+
+    <!-- 2 · PROBLEM -->
+    <section class="slide">
+      <div class="stage">
+        <div class="eyebrow"><span class="tick"></span> The problem · 02</div>
+        <h1 class="head">India is <span class="em">one chokepoint</span> away from a price shock.</h1>
+        <div class="stat-row cols-3">
+          <div class="tile"><span class="mono-lab">Import dependence</span><span class="big crit">88<span class="unit">%</span></span><span class="cap">of crude consumption is imported.</span></div>
+          <div class="tile"><span class="mono-lab">Via Strait of Hormuz</span><span class="big crit">40–45<span class="unit">%</span></span><span class="cap">of those imports transit one strait.</span></div>
+          <div class="tile"><span class="mono-lab">Strategic reserve cover</span><span class="big warn">9.5<span class="unit"> days</span></span><span class="cap">of strategic SPR — a thin buffer.</span></div>
+        </div>
+        <div class="lede">A single Gulf disruption cascades within days to refinery run-cuts, landed-cost spikes, and pump-price pass-through — and today the response is manual, siloed, and slow (a ~47-day stabilization gap).</div>
+      </div>
+      <div class="foot"><span>SENTINEL</span><span>source: ET Hackathon brief PS2 · PPAC</span></div>
+    </section>
+
+    <!-- 3 · THE GAP -->
+    <section class="slide">
+      <div class="stage">
+        <div class="eyebrow"><span class="tick"></span> Why it's hard today · 03</div>
+        <h1 class="head">The signals exist. The <span class="em">decision loop</span> doesn't.</h1>
+        <div class="stat-row cols-3">
+          <div class="card">
+            <div class="klabel">Signals</div>
+            <p style="margin:0;color:var(--ink-2s);line-height:1.5;">News, AIS vessel tracks, prices and sanctions live in <b style="color:var(--ink);">separate silos</b> — no one score that says "Hormuz is heating up."</p>
+          </div>
+          <div class="card">
+            <div class="klabel">Scenarios</div>
+            <p style="margin:0;color:var(--ink-2s);line-height:1.5;">Impact planning is <b style="color:var(--ink);">spreadsheet-bound and opaque</b> — assumptions buried, hard to audit under time pressure.</p>
+          </div>
+          <div class="card">
+            <div class="klabel">Procurement</div>
+            <p style="margin:0;color:var(--ink-2s);line-height:1.5;">Rerouting is <b style="color:var(--ink);">tribal knowledge</b> — which grade fits which refinery, at what cost, by when?</p>
+          </div>
+        </div>
+        <div class="lede">Nobody owns the continuous path from <b style="color:var(--ink);">a signal</b> to <b style="color:var(--ink);">an executable decision</b>. Sentinel is that path.</div>
+      </div>
+      <div class="foot"><span>SENTINEL</span><span>the missing loop</span></div>
+    </section>
+
+    <!-- 4 · SOLUTION LOOP + PIPELINE -->
+    <section class="slide">
+      <div class="stage">
+        <div class="eyebrow"><span class="tick"></span> The solution · 04</div>
+        <h1 class="head">One continuous loop: <span class="em">Watch → Simulate → Decide.</span></h1>
+        <div class="flow">
+          <div class="node"><div class="n">01 · SIGNAL</div><h4>Extraction</h4><p>LLM classifies each event → type · corridor · severity · confidence.</p></div>
+          <div class="arrow">→</div>
+          <div class="node"><div class="n">02 · RISK</div><h4>Scoring</h4><p>Deterministic time-decayed model → live corridor risk 0–100 with an evidence trail.</p></div>
+          <div class="arrow">→</div>
+          <div class="node"><div class="n">03 · SCENARIO</div><h4>Simulation</h4><p>Threshold breach auto-runs a parameterized supply-flow model.</p></div>
+          <div class="arrow">→</div>
+          <div class="node"><div class="n">04 · PROCURE</div><h4>Recommend</h4><p>Ranked, grade-checked reroutes with cost, ETA &amp; caveats.</p></div>
+        </div>
+        <div class="lede">Signals are <b style="color:var(--ink);">watched</b> continuously, disruption is <b style="color:var(--ink);">simulated</b> transparently, and reroutes are <b style="color:var(--ink);">decided</b> as cards a procurement head can act on — end to end, in one system.</div>
+      </div>
+      <div class="foot"><span>SENTINEL</span><span>LangGraph-style agent pipeline · Claude for extraction only</span></div>
+    </section>
+
+    <!-- 5 · DEMO calm -->
+    <section class="slide">
+      <div class="stage">
+        <div class="eyebrow"><span class="tick"></span> Live demo · calm state · 05</div>
+        <div class="two">
+          <div>
+            <h1 class="head">Every score is <span class="em">inspectable.</span></h1>
+            <div class="lede" style="margin-top:16px;">The corridor map opens calm — Hormuz resting at its structural baseline. Click any corridor and the <b style="color:var(--ink);">evidence trail</b> shows exactly which headlines moved the score, with their weights and time-decay. No black boxes.</div>
+            <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:18px;">
+              <span class="chip">news · GDELT</span><span class="chip">AIS vessels</span>
+              <span class="chip blue"><span class="dot" style="background:var(--good);"></span> live Brent</span>
+              <span class="chip">OFAC sanctions</span>
+            </div>
+          </div>
+          <div class="grid" style="gap:14px;">
+            <div class="tile"><span class="mono-lab">Strait of Hormuz · baseline</span><span class="big warn">45<span class="unit"> / 100</span></span><span class="cap">WATCH — structurally tense, no active events.</span></div>
+            <div class="stat-row cols-2">
+              <div class="tile" style="padding:16px 18px;"><span class="mono-lab">Red Sea</span><span class="big" style="font-size:2.4rem;color:var(--warn);">40</span></div>
+              <div class="tile" style="padding:16px 18px;"><span class="mono-lab">Cape</span><span class="big" style="font-size:2.4rem;color:var(--good);">15</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="foot"><span>SENTINEL</span><span>screen 1 · corridor map + evidence panel</span></div>
+    </section>
+
+    <!-- 6 · DEMO escalation -->
+    <section class="slide">
+      <div class="stage">
+        <div class="eyebrow"><span class="tick"></span> Live demo · escalation · 06</div>
+        <h1 class="head">9 headlines. Hormuz climbs <span class="em">45 → 72</span>. The scenario fires itself.</h1>
+        <div class="card">
+          <div class="climb" id="climb">
+            <div class="bar"><div class="v">45</div><div class="fill" style="height:38%;background:var(--warn-fill);"></div></div>
+            <div class="bar"><div class="v">50</div><div class="fill" style="height:46%;background:var(--warn-fill);"></div></div>
+            <div class="bar"><div class="v">54</div><div class="fill" style="height:52%;background:var(--warn-fill);"></div></div>
+            <div class="bar"><div class="v">55</div><div class="fill" style="height:54%;background:var(--serious);"></div></div>
+            <div class="bar"><div class="v">59</div><div class="fill" style="height:60%;background:var(--serious);"></div></div>
+            <div class="bar"><div class="v">66</div><div class="fill" style="height:70%;background:var(--serious);"></div></div>
+            <div class="bar"><div class="v">66</div><div class="fill" style="height:70%;background:var(--serious);"></div></div>
+            <div class="bar"><div class="v" style="color:var(--crit);">72</div><div class="fill" style="height:80%;background:var(--crit);"></div></div>
+            <div class="bar"><div class="v" style="color:var(--crit);">76</div><div class="fill" style="height:88%;background:var(--crit);"></div></div>
+          </div>
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-top:12px;border-top:1px dashed var(--line);padding-top:10px;">
+            <span class="chip">"Iran threatens to mine the Strait of Hormuz"</span>
+            <span class="chip crit">▲ crosses 70 → auto-trigger hormuz_50</span>
+          </div>
+        </div>
+        <div class="lede">The risk model is <b style="color:var(--ink);">deterministic</b> — an exponential time-decayed sum of severity × type-weight, squashed to 0–100. When a corridor breaches 70, its mapped scenario runs with <b style="color:var(--ink);">no human in the loop</b>.</div>
+      </div>
+      <div class="foot"><span>SENTINEL</span><span>screen 1 → websocket-driven auto-navigation</span></div>
+    </section>
+
+    <!-- 7 · SCENARIO MATH -->
+    <section class="slide">
+      <div class="stage">
+        <div class="eyebrow"><span class="tick"></span> Live demo · scenario math · 07</div>
+        <h1 class="head">Cascading impact — and <span class="em">every number carries its formula.</span></h1>
+        <div class="stat-row cols-4">
+          <div class="tile"><span class="mono-lab">Supply gap</span><span class="big crit">1,013<span class="unit"> kb/d</span></span><span class="cap">21.5% of net imports.</span></div>
+          <div class="tile"><span class="mono-lab">SPR runway vs gap</span><span class="big warn">300<span class="unit"> days</span></span><span class="cap">reserve ÷ uncovered gap.</span></div>
+          <div class="tile"><span class="mono-lab">Landed cost Δ</span><span class="big warn">+$30.5<span class="unit">/bbl</span></span><span class="cap">Brent $82 → $112.5.</span></div>
+          <div class="tile"><span class="mono-lab">Retail pass-through</span><span class="big crit">₹5.55<span class="unit">/L</span></span><span class="cap">est. pump impact.</span></div>
+        </div>
+        <div class="formula">
+          <b>runway</b> = reserve_kb / supply_gap = 303,795 / 1,013 = <b>300 days</b><br>
+          <b>Δ$/bbl</b> = spot_premium(24.5) + shock(6.0) + reroute(0.0) = <b>30.5</b><br>
+          <b>₹/L</b> = Δ$/bbl × 0.52 × 0.35 (pass-through efficiency) = <b>5.55</b>
+        </div>
+        <div class="lede">Pure functions, unit-tested against hand-computed values. Every coefficient lives in <b style="color:var(--ink);">assumptions.yaml</b> with a cited source — the transparency contract judges asked for.</div>
+      </div>
+      <div class="foot"><span>SENTINEL</span><span>screen 2 · scenario console · click ⓘ on any figure</span></div>
+    </section>
+
+    <!-- 8 · RECOMMENDATION -->
+    <section class="slide">
+      <div class="stage">
+        <div class="eyebrow"><span class="tick"></span> Live demo · executable output · 08</div>
+        <h1 class="head">Not ML output — a card a <span class="em">procurement head can act on.</span></h1>
+        <div class="stat-row cols-3">
+          <div class="card"><div style="display:flex;justify-content:space-between;align-items:baseline;"><b style="font-family:var(--font-display);font-size:1.3rem;">1 · Urals</b><span style="color:var(--good);font-family:var(--font-mono);font-weight:600;">−$0.5/bbl</span></div><p style="margin:8px 0 10px;color:var(--ink-2s);font-size:.86rem;line-height:1.4;">255 kb/d · ETA 24d · Russia via Red Sea. Clears grade checks at 9 refineries.</p><span class="chip crit">⚠ sanctions / price-cap flag</span></div>
+          <div class="card"><div style="display:flex;justify-content:space-between;align-items:baseline;"><b style="font-family:var(--font-display);font-size:1.3rem;">2 · Tupi</b><span style="color:var(--warn);font-family:var(--font-mono);font-weight:600;">+$7.9/bbl</span></div><p style="margin:8px 0 10px;color:var(--ink-2s);font-size:.86rem;line-height:1.4;">Brazil via Cape. Sweet medium, broad compatibility, no sanction risk.</p><span class="chip">grade-compatible</span></div>
+          <div class="card"><div style="display:flex;justify-content:space-between;align-items:baseline;"><b style="font-family:var(--font-display);font-size:1.3rem;">3 · Bonny Light</b><span style="color:var(--warn);font-family:var(--font-mono);font-weight:600;">+$9.4/bbl</span></div><p style="margin:8px 0 10px;color:var(--ink-2s);font-size:.86rem;line-height:1.4;">Nigeria via Cape. Light sweet, clean pass at every shortfall refinery.</p><span class="chip">grade-compatible</span></div>
+        </div>
+        <div class="lede">Each reroute is scored on cost, transit, availability and a <b style="color:var(--ink);">deterministic API°/sulfur grade-compatibility check</b> per shortfall refinery — then exported as a one-page brief. <b style="color:var(--accent);">Signal → recommendation: 4 minutes.</b></div>
+      </div>
+      <div class="foot"><span>SENTINEL</span><span>screen 3 · ranked cards + brief export</span></div>
+    </section>
+
+    <!-- 9 · TECHNICAL EXCELLENCE -->
+    <section class="slide">
+      <div class="stage">
+        <div class="eyebrow"><span class="tick"></span> Technical excellence · 09</div>
+        <div class="two">
+          <div>
+            <h1 class="head">Auditable by <span class="em">construction.</span></h1>
+            <ul class="clean" style="margin-top:20px;">
+              <li><span class="mk">▸</span><span><b>Deterministic risk model</b>, not ML — every score reproducible and explainable.</span></li>
+              <li><span class="mk">▸</span><span><b>Pure-function scenario engine</b>, unit-tested against hand-computed expected values.</span></li>
+              <li><span class="mk">▸</span><span><b>Strict Pydantic schemas</b> on every LLM step, with an offline <b>mock mode</b>.</span></li>
+              <li><span class="mk">▸</span><span><b>Full evidence trail</b> persisted per score — which events, which weights.</span></li>
+            </ul>
+          </div>
+          <div class="grid" style="gap:16px;">
+            <div class="tile"><span class="mono-lab">Backend test suite</span><span class="big accent">22<span class="unit"> passing</span></span><span class="cap">sim + risk + procurement + extraction.</span></div>
+            <div class="stat-row cols-2">
+              <div class="tile" style="padding:16px 18px;"><span class="mono-lab">LLM role</span><span class="big" style="font-size:1.7rem;">extract<br>only</span></div>
+              <div class="tile" style="padding:16px 18px;"><span class="mono-lab">Demo net calls</span><span class="big" style="font-size:1.7rem;color:var(--good);">offline</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="foot"><span>SENTINEL</span><span>FastAPI · SQLAlchemy 2.0 · React + Vite · config-driven</span></div>
+    </section>
+
+    <!-- 10 · BUSINESS IMPACT -->
+    <section class="slide">
+      <div class="stage">
+        <div class="eyebrow"><span class="tick"></span> Business impact · 10</div>
+        <h1 class="head">Lead time <span class="em">is</span> the buffer.</h1>
+        <div class="two">
+          <div class="lede">
+            With only ~9.5 days of strategic cover, the scarce resource in a crude crisis is <b style="color:var(--ink);">decision time</b>. Compressing signal-to-reroute from days to minutes protects SPR runway and blunts the ₹/L pass-through before it reaches the pump.
+            <div style="height:14px;"></div>
+            Decision <b style="color:var(--ink);">quality</b> matters too: the grade-compatibility filter kills infeasible cargoes procurement would otherwise chase — every card is liftable at a named refinery.
+          </div>
+          <div class="grid" style="gap:16px;">
+            <div class="tile"><span class="mono-lab">Response time</span><span class="big accent">&lt; 5<span class="unit"> min</span></span><span class="cap">signal → executable recommendation, vs a ~47-day manual gap.</span></div>
+            <div class="tile"><span class="mono-lab">Every recommendation</span><span class="big" style="font-size:2.2rem;color:var(--good);">grade-checked</span><span class="cap">API° / sulfur validated per shortfall refinery.</span></div>
+          </div>
+        </div>
+      </div>
+      <div class="foot"><span>SENTINEL</span><span>faster + feasible = smaller gap to cover</span></div>
+    </section>
+
+    <!-- 11 · SCALABILITY -->
+    <section class="slide">
+      <div class="stage">
+        <div class="eyebrow"><span class="tick"></span> Scalability · 11</div>
+        <h1 class="head">One engine. <span class="em">Any import-dependent chokepoint.</span></h1>
+        <div class="stat-row cols-4">
+          <div class="tile" style="align-items:center;text-align:center;"><span class="big" style="font-size:2rem;">⛽</span><span class="cap"><b style="color:var(--ink);">LNG</b><br>regas terminals</span></div>
+          <div class="tile" style="align-items:center;text-align:center;"><span class="big" style="font-size:2rem;">⛏️</span><span class="cap"><b style="color:var(--ink);">Coal</b><br>seaborne thermal</span></div>
+          <div class="tile" style="align-items:center;text-align:center;"><span class="big" style="font-size:2rem;">🌱</span><span class="cap"><b style="color:var(--ink);">Fertilizer</b><br>urea / DAP</span></div>
+          <div class="tile" style="align-items:center;text-align:center;"><span class="big" style="font-size:2rem;">🫙</span><span class="cap"><b style="color:var(--ink);">Edible oils</b><br>palm / soy</span></div>
+        </div>
+        <div class="lede">The corridor / commodity / facility model is <b style="color:var(--ink);">commodity-agnostic</b> — swap <b style="color:var(--ink);">config/*.yaml</b> and the same watch-simulate-decide engine applies. Postgres + pgvector and LangGraph are drop-in for production scale.</div>
+      </div>
+      <div class="foot"><span>SENTINEL</span><span>config-driven generality</span></div>
+    </section>
+
+    <!-- 12 · ROADMAP / CLOSE -->
+    <section class="slide dark">
+      <div class="stage">
+        <div class="eyebrow"><span class="tick"></span> Roadmap &amp; ask · 12</div>
+        <h1 class="head" style="color:#f4f8fd;">From prototype to <span style="color:#5aa0ef;">standing capability.</span></h1>
+        <div class="stat-row cols-2" style="gap:16px;">
+          <div class="tile"><span class="mono-lab" style="color:#8fb0d4;">Next</span><span class="cap" style="font-size:1rem;"><b style="color:#eaf2fb;">SPR drawdown optimiser</b> · full supply-chain <b style="color:#eaf2fb;">digital twin</b></span></div>
+          <div class="tile"><span class="mono-lab" style="color:#8fb0d4;">Then</span><span class="cap" style="font-size:1rem;"><b style="color:#eaf2fb;">Backtest module</b> (replay historic standoffs) · live AIS + GDELT in production mode</span></div>
+        </div>
+        <div class="rule" style="margin:6px 0;"></div>
+        <div style="display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:20px;">
+          <div class="tagline" style="max-width:22ch;">The ask: <b style="color:#fff;font-weight:600;">a pilot with a refiner or PPAC.</b></div>
+          <div class="wordmark"><div class="mark"><svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2 4 6v6c0 5 3.4 8.5 8 10 4.6-1.5 8-5 8-10V6l-8-4Z"/></svg></div><span style="font-family:var(--font-display);letter-spacing:.16em;font-size:2rem;color:#f4f8fd;">SENTINEL</span></div>
+        </div>
+      </div>
+      <div class="foot"><span>SENTINEL</span><span><b>Signal to executable recommendation in under 5 minutes.</b></span></div>
+    </section>
+
+  </div>
+</div>
+
+<div class="nav">
+  <button id="prev" aria-label="previous slide">‹</button>
+  <span class="count"><span id="cur">01</span> / 12</span>
+  <button id="next" aria-label="next slide">›</button>
+</div>
+<div class="hint">← → arrows · F fullscreen · P print/PDF</div>
+
+<script>
+  (function () {
+    const track = document.getElementById("track");
+    const slides = Array.from(track.children);
+    const total = slides.length;
+    let i = 0;
+    const cur = document.getElementById("cur");
+    const prog = document.getElementById("progress");
+
+    function show(n) {
+      i = Math.max(0, Math.min(total - 1, n));
+      track.style.transform = "translateX(" + (-i * 100) + "%)";
+      cur.textContent = String(i + 1).padStart(2, "0");
+      prog.style.width = ((i + 1) / total) * 100 + "%";
+      location.hash = i + 1;
+    }
+    document.getElementById("next").onclick = () => show(i + 1);
+    document.getElementById("prev").onclick = () => show(i - 1);
+    document.addEventListener("keydown", (e) => {
+      if (["ArrowRight", "PageDown", " "].includes(e.key)) { e.preventDefault(); show(i + 1); }
+      else if (["ArrowLeft", "PageUp"].includes(e.key)) { e.preventDefault(); show(i - 1); }
+      else if (e.key === "Home") show(0);
+      else if (e.key === "End") show(total - 1);
+      else if (e.key.toLowerCase() === "f") { if (!document.fullscreenElement) document.documentElement.requestFullscreen?.(); else document.exitFullscreen?.(); }
+      else if (e.key.toLowerCase() === "p") window.print();
+    });
+    // swipe (touch)
+    let x0 = null;
+    track.addEventListener("touchstart", (e) => (x0 = e.touches[0].clientX), { passive: true });
+    track.addEventListener("touchend", (e) => {
+      if (x0 === null) return;
+      const dx = e.changedTouches[0].clientX - x0;
+      if (Math.abs(dx) > 40) show(i + (dx < 0 ? 1 : -1));
+      x0 = null;
+    });
+    const start = parseInt(location.hash.slice(1), 10);
+    show(Number.isFinite(start) && start >= 1 ? start - 1 : 0);
+  })();
+</script>

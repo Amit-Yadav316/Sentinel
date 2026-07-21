@@ -133,8 +133,9 @@ plays out in the browser with no live-internet dependency.
 - [x] `make demo` runs the whole thing end to end; test on a clean machine.
 - [x] Architecture diagram (docs/architecture.md): mermaid, matches CLAUDE.md.
       TODO: export PNG/SVG from the mermaid source for the deck.
-- [~] Deck: 12-slide outline + speaker notes in docs/deck-notes.md.
-      TODO: build the actual slides from the outline.
+- [x] Deck: built `docs/deck.html` — 12 self-contained slides (keyboard nav,
+      print-to-PDF), matching the app's light theme; speaker notes in
+      docs/deck-notes.md. Also published as a shareable artifact.
 - [ ] Record 3-min demo video following the script (calm → escalation →
       scenario → recommendation → "signal to recommendation: 4 minutes").
 - [x] README: setup, `make demo`, data sources table (real vs synthetic).
