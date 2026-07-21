@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+from datetime import datetime, timezone
+
 from fastapi import APIRouter, Depends
 from sqlalchemy import select
 from sqlalchemy.orm import Session
@@ -59,5 +61,36 @@ def vessels(db: Session = Depends(get_db)) -> list[dict]:
 
 @router.get("/prices/brent")
 def brent() -> dict:
+    """Cached Brent — instant, offline-safe. Frontend loads this first."""
     series = prices.get_brent_series()
-    return {"symbol": "BRENT", "unit": "USD/bbl", "latest": series[-1]["value"], "series": series}
+    return {
+        "symbol": "BRENT",
+        "unit": "USD/bbl",
+        "latest": series[-1]["value"],
+        "series": series,
+        "source": "cache",
+    }
+
+
+@router.get("/prices/brent/live")
+async def brent_live() -> dict:
+    """Attempt a real-time Brent quote (Yahoo, timeout-bounded). Falls back to
+    cache on any failure so the demo never hangs offline."""
+    live = await prices.fetch_live_brent()
+    if live:
+        return {
+            "symbol": "BRENT",
+            "unit": "USD/bbl",
+            "latest": live["value"],
+            "series": live["series"],
+            "source": "live",
+            "as_of": datetime.now(timezone.utc).isoformat(),
+        }
+    series = prices.get_brent_series()
+    return {
+        "symbol": "BRENT",
+        "unit": "USD/bbl",
+        "latest": series[-1]["value"],
+        "series": series,
+        "source": "cache",
+    }

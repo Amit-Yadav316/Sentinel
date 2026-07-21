@@ -15,6 +15,8 @@ interface StoreState {
   vessels: Vessel[];
   brent: number;
   brentSeries: { date: string; value: number }[];
+  brentSource: "cache" | "live";
+  brentAsOf: string | null;
   scenarios: ScenarioSummary[];
   runs: ScenarioRun[];
   recommendations: Recommendation[];
@@ -43,6 +45,8 @@ export const useStore = create<StoreState>((set, get) => ({
   vessels: [],
   brent: 0,
   brentSeries: [],
+  brentSource: "cache",
+  brentAsOf: null,
   scenarios: [],
   runs: [],
   recommendations: [],
@@ -75,6 +79,19 @@ export const useStore = create<StoreState>((set, get) => ({
     if (runs.length > 0) {
       await get().selectRun(runs[0].id);
     }
+    // Upgrade the cached price to a real-time quote in the background — never
+    // blocks initial render, and silently keeps cache if offline.
+    api
+      .brentLive()
+      .then((b) =>
+        set({
+          brent: b.latest,
+          brentSeries: b.series,
+          brentSource: b.source === "live" ? "live" : "cache",
+          brentAsOf: b.as_of ?? null,
+        }),
+      )
+      .catch(() => {});
   },
 
   connect: () => {

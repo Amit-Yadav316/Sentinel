@@ -89,7 +89,7 @@ in `tests/test_flow_model.py` and `tests/test_risk_scoring.py`.
 | Signal | Source | Demo mode |
 |---|---|---|
 | News events | GDELT 2.0 / curated headlines | **cached** baseline + scripted escalation |
-| Brent price | yfinance (`BZ=F`) | **cached** 30-day series (synth fallback) |
+| Brent price | Yahoo Finance chart API (`BZ=F`) | **live** on load (real-time quote, ~1s) with instant cache fallback |
 | Sanctions | OFAC SDN list | **cached** flag snapshot |
 | Vessel positions | AISStream.io | **synthetic** fixture (36 tankers) — labelled *simulated* |
 | Corridors / refineries / crudes | PPAC + public crude assays (BP/ExxonMobil) | `config/*.yaml`, each value sourced |

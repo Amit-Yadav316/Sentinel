@@ -25,7 +25,12 @@ export const api = {
   corridors: () => get<Corridor[]>("/corridors"),
   risk: () => get<CorridorRisk[]>("/corridors/risk"),
   vessels: () => get<Vessel[]>("/vessels"),
-  brent: () => get<{ latest: number; series: { date: string; value: number }[] }>("/prices/brent"),
+  brent: () =>
+    get<{ latest: number; series: { date: string; value: number }[]; source: string }>("/prices/brent"),
+  brentLive: () =>
+    get<{ latest: number; series: { date: string; value: number }[]; source: string; as_of?: string }>(
+      "/prices/brent/live",
+    ),
   scenarios: () => get<ScenarioSummary[]>("/scenarios"),
   runScenario: (name: string) =>
     post<{ run_id: number; result: ScenarioRun["result"]; recommendations: Recommendation[] }>(
