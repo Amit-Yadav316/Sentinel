@@ -57,6 +57,27 @@ pass_through:
   usd_inr: 83.0
   # source: indicative FX.
 
+economic:
+  # Macro-economic transmission of a crude price shock.
+  india_gdp_usd_bn: 3900
+  # source: India nominal GDP ~US$3.9 trillion (FY25, IMF/MoSPI).
+  annual_import_barrels_bn: 1.72
+  # source: net imports ~4.71 mb/d × 365 ≈ 1.72 billion barrels/year.
+  gdp_drag_pp_per_10usd: 0.14
+  # source: RBI/IMF-style sensitivity — a sustained +$10/bbl trims India's GDP
+  #   growth by ~0.13–0.15 percentage points. Illustrative, testable.
+  cad_widen_pp_per_10usd: 0.40
+  # source: current-account sensitivity — ~0.4% of GDP wider CAD per +$10/bbl.
+
+power:
+  # Power-sector exposure to liquid-fuel prices (India's grid is coal-heavy, so
+  # the direct exposure is the oil+gas + diesel-backup segment).
+  liquid_fuel_generation_share_pct: 3.0
+  # source: oil+gas share of India power generation ~2.5–3% (CEA).
+  power_stress_sensitivity: 0.9
+  # source: assumption — scales the crude price-shock % into a 0–100 stress
+  #   index for oil/gas peakers, diesel gensets and irrigation pumping.
+
 procurement:
   # Freight proxy: extra $/bbl per laden transit-day beyond the Hormuz baseline.
   freight_per_transit_day_usd: 0.15

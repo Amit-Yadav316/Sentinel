@@ -44,6 +44,10 @@ class ScenarioResult:
     landed_cost_delta_usd_bbl: float
     brent_after_usd: float
     retail_passthrough_inr_l: float
+    import_bill_delta_usd_bn: float
+    gdp_drag_pp: float
+    cad_widen_pp: float
+    power_stress_index: float
     reserve_kb: float
     formulas: dict[str, str] = field(default_factory=dict)
     assumptions_used: dict[str, Any] = field(default_factory=dict)
@@ -158,6 +162,15 @@ def run_scenario(
     pt = assumptions["pass_through"]
     retail_delta = landed_cost_delta * pt["usd_per_bbl_to_inr_per_litre"] * pt["pass_through_efficiency"]
 
+    # 6) Macro-economic + power-sector transmission of the price shock.
+    econ = assumptions["economic"]
+    pw = assumptions["power"]
+    price_shock_pct = (landed_cost_delta / state.brent_usd * 100.0) if state.brent_usd else 0.0
+    import_bill_delta_bn = landed_cost_delta * econ["annual_import_barrels_bn"]  # $bn / year
+    gdp_drag_pp = (landed_cost_delta / 10.0) * econ["gdp_drag_pp_per_10usd"]
+    cad_widen_pp = (landed_cost_delta / 10.0) * econ["cad_widen_pp_per_10usd"]
+    power_stress = min(100.0, price_shock_pct * pw["power_stress_sensitivity"])
+
     formulas = {
         "supply_gap_kbd": (
             "supply_gap = Σ_corridor  net_imports × baseline_share × (1 − multiplier)  "
@@ -179,6 +192,22 @@ def run_scenario(
             f"₹/L = Δ$/bbl × {pt['usd_per_bbl_to_inr_per_litre']} × "
             f"{pt['pass_through_efficiency']} = {retail_delta:.2f}"
         ),
+        "import_bill_delta_usd_bn": (
+            f"import-bill Δ = Δ$/bbl × {econ['annual_import_barrels_bn']} bn bbl/yr "
+            f"= ${import_bill_delta_bn:.0f} bn/yr"
+        ),
+        "gdp_drag_pp": (
+            f"GDP drag = (Δ$/bbl ÷ 10) × {econ['gdp_drag_pp_per_10usd']} = "
+            f"{gdp_drag_pp:.2f} pp of growth"
+        ),
+        "cad_widen_pp": (
+            f"CAD widening = (Δ$/bbl ÷ 10) × {econ['cad_widen_pp_per_10usd']} = "
+            f"{cad_widen_pp:.2f} pp of GDP"
+        ),
+        "power_stress_index": (
+            f"power stress = min(100, price-shock {price_shock_pct:.0f}% × "
+            f"{pw['power_stress_sensitivity']}) = {power_stress:.0f}/100"
+        ),
     }
     assumptions_used = {
         "net_imports_kbd": round(net, 0),
@@ -198,6 +227,10 @@ def run_scenario(
         landed_cost_delta_usd_bbl=round(landed_cost_delta, 1),
         brent_after_usd=round(brent_after, 1),
         retail_passthrough_inr_l=round(retail_delta, 2),
+        import_bill_delta_usd_bn=round(import_bill_delta_bn, 1),
+        gdp_drag_pp=round(gdp_drag_pp, 2),
+        cad_widen_pp=round(cad_widen_pp, 2),
+        power_stress_index=round(power_stress, 1),
         reserve_kb=round(reserve_kb, 0),
         formulas=formulas,
         assumptions_used=assumptions_used,

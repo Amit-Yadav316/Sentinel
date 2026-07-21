@@ -74,6 +74,10 @@ export interface ScenarioResult {
   landed_cost_delta_usd_bbl: number;
   brent_after_usd: number;
   retail_passthrough_inr_l: number;
+  import_bill_delta_usd_bn: number;
+  gdp_drag_pp: number;
+  cad_widen_pp: number;
+  power_stress_index: number;
   reserve_kb: number;
   formulas: Record<string, string>;
   assumptions_used: Record<string, number>;

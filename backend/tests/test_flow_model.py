@@ -69,8 +69,24 @@ def test_hormuz_50_refinery_allocation(corpus_bundle):
     assert sum(shortfalls.values()) == pytest.approx(1012.65, abs=1.0)
 
 
+def test_hormuz_50_macro_impact(corpus_bundle):
+    # landed Δ = 30.475 $/bbl (unrounded), Brent 82.
+    #   import-bill Δ = 30.475 × 1.72 bn bbl   = $52.4 bn/yr
+    #   GDP drag      = 3.0475 × 0.14          = 0.43 pp
+    #   CAD widening  = 3.0475 × 0.40          = 1.22 pp of GDP
+    #   power stress  = min(100, 37.16% × 0.9) = 33.4 / 100
+    cfg = corpus.scenario_by_name()["hormuz_50"]
+    res = run_scenario(cfg, State(brent_usd=82.0), corpus_bundle)
+    assert res.import_bill_delta_usd_bn == pytest.approx(52.4, abs=0.3)
+    assert res.gdp_drag_pp == pytest.approx(0.43, abs=0.02)
+    assert res.cad_widen_pp == pytest.approx(1.22, abs=0.05)
+    assert res.power_stress_index == pytest.approx(33.4, abs=0.4)
+
+
 def test_no_disruption_is_calm(corpus_bundle):
     res = run_scenario({"name": "calm", "corridor_multipliers": {}}, State(brent_usd=82.0), corpus_bundle)
     assert res.supply_gap_kbd == 0.0
     assert res.spr_runway_days == -1.0  # sentinel for "infinite" (no gap)
     assert res.landed_cost_delta_usd_bbl == 0.0
+    assert res.gdp_drag_pp == 0.0
+    assert res.power_stress_index == 0.0

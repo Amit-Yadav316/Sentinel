@@ -151,7 +151,11 @@ def render_brief(run: ScenarioRun, recs: list[Recommendation]) -> str:
         f"({res['supply_gap_pct']:.1f}% of net imports)  ",
         f"**SPR runway vs gap:** {res['spr_runway_days']:.1f} days  ",
         f"**Landed cost delta:** ${res['landed_cost_delta_usd_bbl']:.1f}/bbl  ",
-        f"**Est. retail pass-through:** ₹{res['retail_passthrough_inr_l']:.2f}/L",
+        f"**Est. retail pass-through:** ₹{res['retail_passthrough_inr_l']:.2f}/L  ",
+        f"**Annual import-bill impact:** +${res.get('import_bill_delta_usd_bn', 0):.0f} bn/yr  ",
+        f"**Est. GDP-growth drag:** {res.get('gdp_drag_pp', 0):.2f} pp · "
+        f"CAD +{res.get('cad_widen_pp', 0):.2f} pp  ",
+        f"**Power-sector stress index:** {res.get('power_stress_index', 0):.0f}/100",
         "",
         "## Recommended reroutes",
     ]

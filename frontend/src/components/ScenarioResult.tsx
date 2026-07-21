@@ -37,6 +37,40 @@ export function ScenarioResultView({ result }: { result: Result }) {
         />
       </div>
 
+      <div>
+        <div className="mb-2 text-sm font-medium text-slate-500">Ripple into the wider economy</div>
+        <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
+          <Kpi
+            label="Annual import bill"
+            value={`+$${result.import_bill_delta_usd_bn.toFixed(0)}bn`}
+            sub="added crude cost / yr"
+            formula={result.formulas.import_bill_delta_usd_bn}
+            tone="danger"
+          />
+          <Kpi
+            label="GDP growth drag"
+            value={`−${result.gdp_drag_pp.toFixed(2)} pp`}
+            sub="est. hit to growth"
+            formula={result.formulas.gdp_drag_pp}
+            tone="warn"
+          />
+          <Kpi
+            label="Current-account"
+            value={`+${result.cad_widen_pp.toFixed(2)} pp`}
+            sub="wider deficit (% GDP)"
+            formula={result.formulas.cad_widen_pp}
+            tone="warn"
+          />
+          <Kpi
+            label="Power-sector stress"
+            value={`${result.power_stress_index.toFixed(0)}/100`}
+            sub="liquid-fuel exposure"
+            formula={result.formulas.power_stress_index}
+            tone="danger"
+          />
+        </div>
+      </div>
+
       <div className="card p-4">
         <div className="mb-3 flex items-center justify-between">
           <div className="text-sm font-semibold text-slate-900">Refinery shortfall allocation</div>
