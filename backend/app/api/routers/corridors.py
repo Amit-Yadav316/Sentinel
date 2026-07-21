@@ -8,10 +8,10 @@ from fastapi import APIRouter, Depends
 from sqlalchemy import delete, select
 from sqlalchemy.orm import Session
 
-from app.agents import risk_scoring
+from app.agents import risk_scoring, signal_extraction
 from app.db import get_db
 from app.models import Vessel
-from app.services import ais, corpus, prices
+from app.services import ais, corpus, gdelt, prices
 
 router = APIRouter(tags=["corridors"])
 
@@ -83,6 +83,33 @@ async def vessels_live(db: Session = Depends(get_db)) -> dict:
         return {"source": "live", "count": len(live), "vessels": live}
     rows = db.execute(select(Vessel)).scalars().all()
     return {"source": "synthetic", "count": len(rows), "vessels": [_vessel_dict(v) for v in rows]}
+
+
+@router.get("/news/live")
+def news_live() -> dict:
+    """Real GDELT headlines classified by the extraction agent (display-only —
+    NOT fed into risk scoring, so the scripted demo is unaffected)."""
+    live = gdelt.fetch_live_headlines() or gdelt.get_cached_live_headlines()
+    source = "live" if live else "baseline"
+    if not live:
+        live = [{"headline": h, "url": None, "domain": None, "seendate": None}
+                for h in gdelt.get_baseline_headlines()]
+    items = []
+    for a in live[:12]:
+        ex = signal_extraction.extract(a["headline"])
+        items.append(
+            {
+                "headline": a["headline"],
+                "url": a.get("url"),
+                "domain": a.get("domain"),
+                "seendate": a.get("seendate"),
+                "event_type": ex.event_type,
+                "corridor": None if ex.corridor == "none" else ex.corridor,
+                "severity": ex.severity,
+                "confidence": ex.confidence,
+            }
+        )
+    return {"source": source, "count": len(items), "items": items}
 
 
 @router.get("/prices/brent")

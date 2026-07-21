@@ -1,6 +1,7 @@
 import type {
   Corridor,
   CorridorRisk,
+  NewsItem,
   Recommendation,
   ScenarioRun,
   ScenarioSummary,
@@ -32,6 +33,7 @@ export const api = {
     get<{ latest: number; series: { date: string; value: number }[]; source: string; as_of?: string }>(
       "/prices/brent/live",
     ),
+  newsLive: () => get<{ source: string; count: number; items: NewsItem[] }>("/news/live"),
   scenarios: () => get<ScenarioSummary[]>("/scenarios"),
   runScenario: (name: string) =>
     post<{ run_id: number; result: ScenarioRun["result"]; recommendations: Recommendation[] }>(

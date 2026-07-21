@@ -3,6 +3,7 @@ import { api, connectRiskStream } from "../lib/api";
 import type {
   Corridor,
   CorridorRisk,
+  NewsItem,
   Recommendation,
   ScenarioRun,
   ScenarioSummary,
@@ -14,6 +15,8 @@ interface StoreState {
   risk: CorridorRisk[];
   vessels: Vessel[];
   vesselSource: "synthetic" | "live";
+  news: NewsItem[];
+  newsSource: string;
   brent: number;
   brentSeries: { date: string; value: number }[];
   brentSource: "cache" | "live";
@@ -45,6 +48,8 @@ export const useStore = create<StoreState>((set, get) => ({
   risk: [],
   vessels: [],
   vesselSource: "synthetic",
+  news: [],
+  newsSource: "baseline",
   brent: 0,
   brentSeries: [],
   brentSource: "cache",
@@ -100,6 +105,11 @@ export const useStore = create<StoreState>((set, get) => ({
       .then((r) => {
         if (r.source === "live") set({ vessels: r.vessels, vesselSource: "live" });
       })
+      .catch(() => {});
+    // Pull the live GDELT news feed, classified by the extraction agent.
+    api
+      .newsLive()
+      .then((r) => set({ news: r.items, newsSource: r.source }))
       .catch(() => {});
   },
 

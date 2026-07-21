@@ -30,6 +30,17 @@ export interface CorridorRisk {
   contributions: RiskContribution[];
 }
 
+export interface NewsItem {
+  headline: string;
+  url: string | null;
+  domain: string | null;
+  seendate: string | null;
+  event_type: string;
+  corridor: string | null;
+  severity: number;
+  confidence: number;
+}
+
 export interface Vessel {
   mmsi: string;
   name: string;

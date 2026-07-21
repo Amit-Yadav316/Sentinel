@@ -2,10 +2,11 @@ import { LineChart, Line, ResponsiveContainer, YAxis, Tooltip } from "recharts";
 import { useStore } from "../store/store";
 import { CorridorMap } from "../components/CorridorMap";
 import { EvidencePanel } from "../components/EvidencePanel";
+import { SignalFeed } from "../components/SignalFeed";
 import { riskLabel, riskTextColor } from "../lib/format";
 
 export function MapScreen() {
-  const { corridors, risk, vessels, vesselSource, selectedCorridor, selectCorridor, brentSeries, lastEventHeadline } =
+  const { corridors, risk, vessels, vesselSource, news, newsSource, selectedCorridor, selectCorridor, brentSeries, lastEventHeadline } =
     useStore();
   const selectedRisk = risk.find((r) => r.corridor === selectedCorridor) ?? null;
 
@@ -63,9 +64,11 @@ export function MapScreen() {
         </div>
       </div>
 
-      <div className="flex flex-col gap-4">
-        <EvidencePanel risk={selectedRisk} />
-        <div className="card p-3">
+      <div className="flex min-h-0 flex-col gap-4">
+        <div className="min-h-0 flex-1">
+          <EvidencePanel risk={selectedRisk} />
+        </div>
+        <div className="card shrink-0 p-3">
           <div className="mb-1 flex items-center justify-between">
             <span className="stat-label">Brent (30d)</span>
             <span className="num text-sm text-slate-700">
@@ -84,6 +87,9 @@ export function MapScreen() {
               </LineChart>
             </ResponsiveContainer>
           </div>
+        </div>
+        <div className="shrink-0">
+          <SignalFeed items={news} source={newsSource} />
         </div>
       </div>
     </div>

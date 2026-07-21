@@ -1,9 +1,15 @@
-"""Thin Claude wrapper with a strict-JSON contract and an offline mock path.
+"""Provider-agnostic LLM wrapper with a strict-JSON contract + offline mock.
 
-In ``LLM_MODE=mock`` (the default) no network call is made — callers pass a
-``mock_fn`` that produces a deterministic result. In ``LLM_MODE=live`` the
-Anthropic SDK is used with retry/backoff and the response is parsed against the
-caller's Pydantic model.
+Three paths, selected by ``LLM_MODE`` + ``LLM_PROVIDER``:
+
+* **mock** (default) — no network; the caller's ``mock_fn`` returns a
+  deterministic result. Keeps the whole app runnable offline.
+* **gemini** — Google Gemini via the free-tier REST endpoint (``httpx``, no SDK).
+  Uses ``response_mime_type: application/json`` for structured output.
+* **claude** — Anthropic Messages API (only imported when used).
+
+``LLM_PROVIDER=auto`` prefers Gemini if a Gemini key is present, else Claude,
+else mock. Any live failure falls back to ``mock_fn`` so a demo never breaks.
 """
 
 from __future__ import annotations
@@ -12,11 +18,73 @@ import json
 import time
 from typing import Callable, TypeVar
 
+import httpx
 from pydantic import BaseModel
 
-from app.config import get_settings
+from app.config import Settings, get_settings
 
 T = TypeVar("T", bound=BaseModel)
+
+_GEMINI_URL = "https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent"
+
+
+def _resolve_provider(s: Settings) -> str | None:
+    """Return the concrete provider to use, or None for mock."""
+    if s.llm_provider == "gemini":
+        return "gemini" if s.gemini_api_key else None
+    if s.llm_provider == "claude":
+        return "claude" if s.anthropic_api_key else None
+    if s.llm_provider == "mock":
+        return None
+    # auto
+    if s.gemini_api_key:
+        return "gemini"
+    if s.anthropic_api_key:
+        return "claude"
+    return None
+
+
+def _extract_json(text: str, schema: type[T]) -> T:
+    start, end = text.find("{"), text.rfind("}")
+    return schema.model_validate_json(text[start : end + 1])
+
+
+def _gemini_call(s: Settings, system: str, user: str, schema: type[T]) -> T:
+    instruction = (
+        f"{system}\n\nReturn ONLY a JSON object matching this schema:\n"
+        f"{json.dumps(schema.model_json_schema())}"
+    )
+    body = {
+        "system_instruction": {"parts": [{"text": instruction}]},
+        "contents": [{"parts": [{"text": user}]}],
+        "generationConfig": {"response_mime_type": "application/json", "temperature": 0},
+    }
+    r = httpx.post(
+        _GEMINI_URL.format(model=s.gemini_model),
+        params={"key": s.gemini_api_key},
+        json=body,
+        timeout=15,
+    )
+    r.raise_for_status()
+    text = r.json()["candidates"][0]["content"]["parts"][0]["text"]
+    return _extract_json(text, schema)
+
+
+def _claude_call(s: Settings, system: str, user: str, schema: type[T]) -> T:
+    from anthropic import Anthropic  # type: ignore
+
+    client = Anthropic(api_key=s.anthropic_api_key)
+    instruction = (
+        f"{system}\n\nRespond ONLY with a JSON object matching this schema:\n"
+        f"{json.dumps(schema.model_json_schema())}"
+    )
+    resp = client.messages.create(
+        model=s.anthropic_model,
+        max_tokens=512,
+        system=instruction,
+        messages=[{"role": "user", "content": user}],
+    )
+    return _extract_json(resp.content[0].text, schema)  # type: ignore[union-attr]
 
 
 def structured_call(
@@ -27,38 +95,20 @@ def structured_call(
     mock_fn: Callable[[], T],
     max_retries: int = 3,
 ) -> T:
-    """Return an instance of ``schema``.
-
-    mock mode -> ``mock_fn()``. live mode -> Anthropic call parsed into ``schema``.
-    """
+    """Return an instance of ``schema`` from the configured provider (or mock)."""
     settings = get_settings()
-    if settings.llm_mode != "live" or not settings.anthropic_api_key:
+    if settings.llm_mode != "live":
         return mock_fn()
 
-    # --- live path (only imported when actually used) ---
-    from anthropic import Anthropic  # type: ignore
+    provider = _resolve_provider(settings)
+    if provider is None:
+        return mock_fn()
 
-    client = Anthropic(api_key=settings.anthropic_api_key)
-    instruction = (
-        f"{system}\n\nRespond ONLY with a JSON object matching this schema:\n"
-        f"{json.dumps(schema.model_json_schema())}"
-    )
-    last_err: Exception | None = None
+    call = _gemini_call if provider == "gemini" else _claude_call
     for attempt in range(max_retries):
         try:
-            resp = client.messages.create(
-                model=settings.anthropic_model,
-                max_tokens=512,
-                system=instruction,
-                messages=[{"role": "user", "content": user}],
-            )
-            text = resp.content[0].text  # type: ignore[union-attr]
-            start, end = text.find("{"), text.rfind("}")
-            return schema.model_validate_json(text[start : end + 1])
-        except Exception as exc:  # noqa: BLE001 — backoff-and-retry any failure
-            last_err = exc
+            return call(settings, system, user, schema)
+        except Exception:  # noqa: BLE001 — backoff and retry any failure
             time.sleep(0.5 * (2**attempt))
-    # Fall back to the mock rather than crash the demo.
-    if last_err:
-        return mock_fn()
-    raise RuntimeError("unreachable")
+    # Never break the demo — fall back to the deterministic mock.
+    return mock_fn()
