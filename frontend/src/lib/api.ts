@@ -25,6 +25,7 @@ export const api = {
   corridors: () => get<Corridor[]>("/corridors"),
   risk: () => get<CorridorRisk[]>("/corridors/risk"),
   vessels: () => get<Vessel[]>("/vessels"),
+  vesselsLive: () => get<{ source: string; count: number; vessels: Vessel[] }>("/vessels/live"),
   brent: () =>
     get<{ latest: number; series: { date: string; value: number }[]; source: string }>("/prices/brent"),
   brentLive: () =>

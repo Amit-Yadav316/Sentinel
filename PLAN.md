@@ -189,5 +189,15 @@ full-stack smoke test confirmed calm state (Hormuz 45.3), manual `hormuz_50` run
 live `/demo/escalate` path drove Hormuz to 76.6 and auto-fired the scenario over
 the websocket.
 
-**Open TODO (Phase 6):** export architecture PNG/SVG from mermaid; build the
-12-slide deck from docs/deck-notes.md; record the 3-min demo video.
+**Geospatial depth pass (post-build):** added a real public-domain coastline
+basemap (Natural Earth 110m, bundled `frontend/src/lib/land.json`, offline),
+re-grounded synthetic vessels into real maritime zones (Persian Gulf, Gulf of
+Oman, Arabian Sea lanes, Bab-el-Mandeb, west-coast anchorages), and implemented
+a real **AISStream.io** live websocket client (`services/ais.py`, key-gated via
+`AISSTREAM_API_KEY`) with a unit-tested parser and synthetic fallback. Live Brent
++ live AIS both upgrade in the background and badge live/simulated. 26 tests pass.
+
+**Deck:** built `docs/deck.html` (12 slides) and published as a shareable artifact.
+
+**Open TODO (Phase 6):** export architecture PNG/SVG from mermaid; record the
+3-min demo video (needs a human screen + voice).

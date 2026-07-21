@@ -13,6 +13,7 @@ interface StoreState {
   corridors: Corridor[];
   risk: CorridorRisk[];
   vessels: Vessel[];
+  vesselSource: "synthetic" | "live";
   brent: number;
   brentSeries: { date: string; value: number }[];
   brentSource: "cache" | "live";
@@ -43,6 +44,7 @@ export const useStore = create<StoreState>((set, get) => ({
   corridors: [],
   risk: [],
   vessels: [],
+  vesselSource: "synthetic",
   brent: 0,
   brentSeries: [],
   brentSource: "cache",
@@ -91,6 +93,13 @@ export const useStore = create<StoreState>((set, get) => ({
           brentAsOf: b.as_of ?? null,
         }),
       )
+      .catch(() => {});
+    // Upgrade vessels to a real AISStream feed if a key is configured.
+    api
+      .vesselsLive()
+      .then((r) => {
+        if (r.source === "live") set({ vessels: r.vessels, vesselSource: "live" });
+      })
       .catch(() => {});
   },
 

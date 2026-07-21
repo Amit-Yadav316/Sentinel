@@ -30,6 +30,8 @@ class Settings(BaseSettings):
     data_mode: str = "cache"        # cache | live
     anthropic_api_key: str | None = None
     anthropic_model: str = "claude-sonnet-4-6"
+    # Free key from aisstream.io enables the real live-AIS path (else synthetic).
+    aisstream_api_key: str | None = None
 
     # SQLite keeps the demo dependency-free; swap DATABASE_URL for Postgres in prod.
     database_url: str = f"sqlite:///{(BACKEND_DIR / 'sentinel.db').as_posix()}"

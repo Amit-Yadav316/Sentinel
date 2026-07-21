@@ -5,13 +5,13 @@ from __future__ import annotations
 from datetime import datetime, timezone
 
 from fastapi import APIRouter, Depends
-from sqlalchemy import select
+from sqlalchemy import delete, select
 from sqlalchemy.orm import Session
 
 from app.agents import risk_scoring
 from app.db import get_db
 from app.models import Vessel
-from app.services import corpus, prices
+from app.services import ais, corpus, prices
 
 router = APIRouter(tags=["corridors"])
 
@@ -43,20 +43,46 @@ def corridor_risk(db: Session = Depends(get_db)) -> list[dict]:
     return out
 
 
+def _vessel_dict(v: Vessel) -> dict:
+    return {
+        "mmsi": v.mmsi,
+        "name": v.name,
+        "lat": v.lat,
+        "lon": v.lon,
+        "corridor": v.corridor,
+        "synthetic": v.synthetic,
+    }
+
+
 @router.get("/vessels")
 def vessels(db: Session = Depends(get_db)) -> list[dict]:
     rows = db.execute(select(Vessel)).scalars().all()
-    return [
-        {
-            "mmsi": v.mmsi,
-            "name": v.name,
-            "lat": v.lat,
-            "lon": v.lon,
-            "corridor": v.corridor,
-            "synthetic": v.synthetic,
-        }
-        for v in rows
-    ]
+    return [_vessel_dict(v) for v in rows]
+
+
+@router.get("/vessels/live")
+async def vessels_live(db: Session = Depends(get_db)) -> dict:
+    """Attempt a real AISStream feed (needs AISSTREAM_API_KEY). On success the
+    live snapshot replaces the vessel set and is returned with source=live;
+    otherwise the labelled synthetic fixture is returned."""
+    live = await ais.fetch_live_ais()
+    if live:
+        db.execute(delete(Vessel))
+        for v in live:
+            db.add(
+                Vessel(
+                    mmsi=v["mmsi"],
+                    name=v["name"],
+                    lat=v["lat"],
+                    lon=v["lon"],
+                    corridor=v.get("corridor"),
+                    synthetic=False,
+                )
+            )
+        db.commit()
+        return {"source": "live", "count": len(live), "vessels": live}
+    rows = db.execute(select(Vessel)).scalars().all()
+    return {"source": "synthetic", "count": len(rows), "vessels": [_vessel_dict(v) for v in rows]}
 
 
 @router.get("/prices/brent")

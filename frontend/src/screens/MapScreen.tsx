@@ -5,7 +5,7 @@ import { EvidencePanel } from "../components/EvidencePanel";
 import { riskLabel, riskTextColor } from "../lib/format";
 
 export function MapScreen() {
-  const { corridors, risk, vessels, selectedCorridor, selectCorridor, brentSeries, lastEventHeadline } =
+  const { corridors, risk, vessels, vesselSource, selectedCorridor, selectCorridor, brentSeries, lastEventHeadline } =
     useStore();
   const selectedRisk = risk.find((r) => r.corridor === selectedCorridor) ?? null;
 
@@ -15,9 +15,15 @@ export function MapScreen() {
         <div className="card relative flex-1 overflow-hidden">
           <div className="absolute left-3 top-3 z-10 flex items-center gap-2">
             <span className="chip border border-line bg-surface/90 text-slate-600">Live corridor risk map</span>
-            <span className="chip border border-fuchsia-200 bg-fuchsia-50 text-fuchsia-700">
-              vessels simulated
-            </span>
+            {vesselSource === "live" ? (
+              <span className="chip border border-emerald-200 bg-emerald-50 text-emerald-700">
+                <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 live-dot" /> live AIS · {vessels.length} vessels
+              </span>
+            ) : (
+              <span className="chip border border-fuchsia-200 bg-fuchsia-50 text-fuchsia-700">
+                vessels simulated
+              </span>
+            )}
           </div>
           {lastEventHeadline && (
             <div className="absolute bottom-3 left-3 right-3 z-10 rounded-lg border border-line bg-surface/95 px-3 py-2 text-[12px] text-slate-700 shadow-sm">

@@ -1,6 +1,11 @@
 import { useMemo } from "react";
 import type { Corridor, CorridorRisk, Vessel } from "../lib/types";
 import { riskColor } from "../lib/format";
+import landRaw from "../lib/land.json";
+
+// Real public-domain coastline geography (Natural Earth 110m):
+// feature -> polygon -> ring -> [lon, lat]  (5 array levels).
+const LAND = landRaw as unknown as number[][][][][];
 
 // Equirectangular projection over a bounding box covering every corridor point
 // (US Gulf .. Malacca, Cape .. Gulf). No basemap tiles => fully offline.
@@ -29,6 +34,25 @@ function arcPath(o: { lat: number; lon: number }, d: { lat: number; lon: number 
   return `M ${x0} ${y0} Q ${mx + nx * bow} ${my + ny * bow} ${x1} ${y1}`;
 }
 
+function polyPath(polygon: number[][][]): string {
+  return polygon
+    .map(
+      (ring) =>
+        "M " +
+        ring
+          .map(([lon, lat]) => {
+            const [x, y] = project(lon, lat);
+            return `${x.toFixed(1)} ${y.toFixed(1)}`;
+          })
+          .join(" L ") +
+        " Z",
+    )
+    .join(" ");
+}
+
+// Precompute land paths once (module-level; geography never changes).
+const LAND_PATHS = LAND.flat().map(polyPath);
+
 export function CorridorMap({
   corridors,
   risk,
@@ -53,6 +77,13 @@ export function CorridorMap({
         </linearGradient>
       </defs>
       <rect x={0} y={0} width={W} height={H} fill="url(#sea)" />
+
+      {/* real coastline basemap (Natural Earth) */}
+      <g>
+        {LAND_PATHS.map((d, i) => (
+          <path key={i} d={d} fill="#e7ebe1" stroke="#cdd4c6" strokeWidth={0.4} fillRule="evenodd" />
+        ))}
+      </g>
 
       {/* graticule */}
       {Array.from({ length: 8 }).map((_, i) => (
@@ -84,12 +115,12 @@ export function CorridorMap({
         );
       })}
 
-      {/* vessels */}
+      {/* vessels (corridor-tinted for synthetic; neutral for live AIS) */}
       {vessels.map((v) => {
         const [x, y] = project(v.lon, v.lat);
-        const score = v.corridor ? riskById.get(v.corridor)?.score ?? 30 : 30;
+        const fill = v.corridor ? riskColor(riskById.get(v.corridor)?.score ?? 30) : "#334e68";
         return (
-          <circle key={v.mmsi} cx={x} cy={y} r={2} fill={riskColor(score)} fillOpacity={0.95}
+          <circle key={v.mmsi} cx={x} cy={y} r={2} fill={fill} fillOpacity={0.95}
             stroke="#ffffff" strokeWidth={0.6} />
         );
       })}
