@@ -4,6 +4,8 @@
 Signal → risk score → scenario → executable procurement recommendation, in
 under 5 minutes, entirely from cached data for the demo.
 
+![Sentinel architecture](architecture.png)
+
 ## System diagram
 
 ```mermaid
