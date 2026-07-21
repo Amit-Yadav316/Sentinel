@@ -19,10 +19,10 @@
     @apply rounded-xl border border-line bg-surface shadow-card;
   }
   .chip {
-    @apply inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[11px] font-medium;
+    @apply inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-xs font-medium;
   }
   .stat-label {
-    @apply text-[11px] uppercase tracking-wider text-slate-500;
+    @apply text-sm font-medium text-slate-500;
   }
   .num {
     @apply font-mono tabular-nums;

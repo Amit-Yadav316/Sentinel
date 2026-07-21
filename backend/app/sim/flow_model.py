@@ -4,7 +4,7 @@ Pure functions only. ``run_scenario(scenario_cfg, state, corpus)`` maps corridor
 throughput multipliers onto a transparent supply-flow chain and returns a
 :class:`ScenarioResult` where **every numeric output carries the formula string
 that produced it** — so the UI can render "how was this computed" with no
-black boxes (a hard CLAUDE.md requirement).
+black boxes.
 
 Chain:
     net imports  ->  per-corridor lost volume  ->  supply gap

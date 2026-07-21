@@ -39,28 +39,28 @@ export function StatusBar() {
               </span>
             )}
           </div>
-          <div className="num text-lg font-bold leading-tight text-slate-900">
+          <div className="num text-xl font-bold leading-tight text-slate-900">
             ${brent.toFixed(1)}
-            <span className="ml-0.5 text-[11px] font-normal text-slate-400">/bbl</span>
+            <span className="ml-0.5 text-xs font-normal text-slate-400">/bbl</span>
           </div>
         </div>
-        <Stat label="Strategic SPR" value={sprDays.toFixed(1)} sub="days" />
+        <Stat label="Reserves left" value={sprDays.toFixed(1)} sub="days" />
         <div className="text-center">
-          <div className="stat-label">Max corridor risk</div>
-          <div className="num text-lg font-bold leading-tight" style={{ color: riskTextColor(maxRisk) }}>
+          <div className="stat-label">Highest risk</div>
+          <div className="num text-xl font-bold leading-tight" style={{ color: riskTextColor(maxRisk) }}>
             {maxRisk.toFixed(0)}
           </div>
         </div>
-        <div className="flex items-center gap-1.5 text-[11px] text-slate-500">
+        <div className="flex items-center gap-1.5 text-xs text-slate-500">
           <span className={`h-2 w-2 rounded-full ${wsConnected ? "bg-emerald-500 live-dot" : "bg-slate-300"}`} />
           {wsConnected ? "live" : "offline"}
         </div>
         <button
           onClick={startEscalation}
           disabled={demoRunning}
-          className="rounded-lg bg-accent px-3.5 py-1.5 text-sm font-semibold text-white shadow-sm transition hover:bg-accent-600 disabled:opacity-50"
+          className="rounded-lg bg-accent px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-accent-600 disabled:opacity-50"
         >
-          {demoRunning ? `Injecting ${demoStep}/${demoTotal}…` : "▶ Run escalation demo"}
+          {demoRunning ? `Playing… ${demoStep}/${demoTotal}` : "▶ Play the crisis demo"}
         </button>
       </div>
     </header>
@@ -71,9 +71,9 @@ function Stat({ label, value, sub }: { label: string; value: string; sub: string
   return (
     <div className="text-center">
       <div className="stat-label">{label}</div>
-      <div className="num text-lg font-bold leading-tight text-slate-900">
+      <div className="num text-xl font-bold leading-tight text-slate-900">
         {value}
-        <span className="ml-0.5 text-[11px] font-normal text-slate-400">{sub}</span>
+        <span className="ml-0.5 text-xs font-normal text-slate-400">{sub}</span>
       </div>
     </div>
   );

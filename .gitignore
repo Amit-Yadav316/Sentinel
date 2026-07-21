@@ -23,3 +23,8 @@ Thumbs.db
 
 # Keep cached fixtures under data/cache (they are the offline demo data)
 !data/cache/
+
+# Local-only working notes / helpers (kept on disk, not published)
+/CLAUDE.md
+/PLAN.md
+backend/test_gemini.py

@@ -1,7 +1,7 @@
 """Pydantic v2 schemas.
 
 ``ExtractionResult`` is the strict output contract for the LLM signal-extraction
-step (CLAUDE.md: every LLM step must have a strict output schema).
+step (every LLM step must return a strict, validated output schema).
 """
 
 from __future__ import annotations

@@ -2,7 +2,7 @@
 
 The ``evidence`` / ``result`` / ``payload`` columns are JSON so every risk score
 and scenario run carries its full transparent trail (which events moved it,
-weights used, formula strings) — a hard requirement from CLAUDE.md.
+weights used, formula strings) so every decision is fully auditable.
 """
 
 from __future__ import annotations

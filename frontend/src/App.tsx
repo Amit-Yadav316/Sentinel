@@ -8,9 +8,9 @@ import { RecommendationsScreen } from "./screens/RecommendationsScreen";
 type Screen = "map" | "scenario" | "recs";
 
 const NAV: { id: Screen; label: string; icon: string }[] = [
-  { id: "map", label: "Corridor Map", icon: "M12 2C8 2 5 5 5 9c0 5 7 13 7 13s7-8 7-13c0-4-3-7-7-7Zm0 9a2 2 0 1 1 0-4 2 2 0 0 1 0 4Z" },
-  { id: "scenario", label: "Scenario Console", icon: "M4 4h16v4H4V4Zm0 6h16v10H4V10Zm3 3v4m4-4v4m4-4v4" },
-  { id: "recs", label: "Recommendations", icon: "M9 11l3 3 8-8M4 12a8 8 0 1 0 16 0 8 8 0 0 0-16 0Z" },
+  { id: "map", label: "Corridor map", icon: "M12 2C8 2 5 5 5 9c0 5 7 13 7 13s7-8 7-13c0-4-3-7-7-7Zm0 9a2 2 0 1 1 0-4 2 2 0 0 1 0 4Z" },
+  { id: "scenario", label: "What-if scenarios", icon: "M4 4h16v4H4V4Zm0 6h16v10H4V10Zm3 3v4m4-4v4m4-4v4" },
+  { id: "recs", label: "What to buy", icon: "M9 11l3 3 8-8M4 12a8 8 0 1 0 16 0 8 8 0 0 0-16 0Z" },
 ];
 
 export default function App() {
@@ -47,7 +47,7 @@ export default function App() {
               <button
                 key={n.id}
                 onClick={() => setScreen(n.id)}
-                className={`flex items-center gap-2.5 rounded-lg px-3 py-2 text-left text-[13px] font-medium transition ${
+                className={`flex items-center gap-2.5 rounded-lg px-3 py-2.5 text-left text-sm font-medium transition ${
                   active ? "bg-accent-soft text-accent-600" : "text-slate-500 hover:bg-slate-100 hover:text-slate-800"
                 }`}
               >
@@ -59,9 +59,9 @@ export default function App() {
               </button>
             );
           })}
-          <div className="mt-auto rounded-lg border border-line bg-slate-50 p-2.5 text-[10px] leading-relaxed text-slate-500">
-            <div className="mb-1 font-semibold text-slate-700">Demo path</div>
-            Signal → risk climb → auto-scenario → executable recommendation, in under 5 minutes.
+          <div className="mt-auto rounded-lg border border-line bg-slate-50 p-3 text-xs leading-relaxed text-slate-500">
+            <div className="mb-1 font-semibold text-slate-700">How it works</div>
+            From a news alert to a clear "buy this instead" call — in under 5 minutes.
           </div>
         </nav>
 

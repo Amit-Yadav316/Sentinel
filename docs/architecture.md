@@ -92,10 +92,10 @@ sequenceDiagram
 | DB | SQLite (SQLAlchemy 2.0, Postgres-ready) | Zero-dependency offline demo |
 | Map | Self-contained SVG projection | No tile server → fully offline |
 
-## Deviations from the original CLAUDE.md architecture
+## Design choices & tradeoffs
 
-Chosen to keep the offline demo reliable within the hackathon timebox; all are
-one-line swaps back to the "production" choice:
+Chosen to keep the offline demo reliable within the hackathon timebox; each is a
+one-line swap back to the heavier "production" choice:
 
 - **Postgres + pgvector → SQLite + in-process cosine.** `DATABASE_URL` swaps the
   engine; procurement RAG uses a small in-memory ranking instead of pgvector.

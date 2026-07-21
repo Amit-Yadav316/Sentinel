@@ -1,4 +1,4 @@
-"""End-to-end agent pipeline: the loop CLAUDE.md is built around.
+"""End-to-end agent pipeline: the loop the whole product is built around.
 
     ingest_event(headline)  →  SignalExtraction  →  persist Event
                             →  RiskScoring.recompute_all

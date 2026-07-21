@@ -1,9 +1,9 @@
 """SQLAlchemy 2.0 engine + session setup.
 
-Deviation from CLAUDE.md: uses SQLite (file-backed) instead of Postgres+pgvector
-so ``make demo`` runs with zero external services. Models are DB-agnostic; the
-only Postgres-specific feature we skip is pgvector — procurement RAG runs an
-in-process cosine search instead (see agents/procurement.py). Logged in PLAN.md.
+Uses SQLite (file-backed) instead of Postgres+pgvector so the app runs with zero
+external services. Models are DB-agnostic; the only Postgres-specific feature we
+skip is pgvector — procurement runs an in-process cosine search instead
+(see agents/procurement.py). Swap ``DATABASE_URL`` for Postgres in production.
 """
 
 from __future__ import annotations

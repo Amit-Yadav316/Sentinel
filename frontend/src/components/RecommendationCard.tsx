@@ -13,16 +13,16 @@ export function RecommendationCard({ rec }: { rec: Recommendation }) {
           {rec.rank}
         </div>
         <div className="flex-1">
-          <div className="text-[15px] font-semibold text-slate-900">{p.crude}</div>
-          <div className="text-[11px] text-slate-500">
+          <div className="text-base font-semibold text-slate-900">{p.crude}</div>
+          <div className="text-sm text-slate-500">
             {p.source} · via {p.route}
           </div>
         </div>
         <div className="text-right">
-          <div className={`num text-lg font-bold ${cheaper ? "text-emerald-600" : "text-amber-600"}`}>
+          <div className={`num text-xl font-bold ${cheaper ? "text-emerald-600" : "text-amber-600"}`}>
             {fmtUsd(p.cost_delta_usd_bbl)}
           </div>
-          <div className="text-[10px] text-slate-400">cost delta</div>
+          <div className="text-xs text-slate-400">vs. the Gulf barrel</div>
         </div>
       </div>
 
@@ -32,11 +32,11 @@ export function RecommendationCard({ rec }: { rec: Recommendation }) {
         <Metric label="Availability" value={`${(p.availability_index * 100).toFixed(0)}`} unit="%" />
       </div>
 
-      <div className="space-y-2.5 p-4">
-        <p className="text-[13px] leading-relaxed text-slate-600">{p.rationale}</p>
+      <div className="space-y-3 p-4">
+        <p className="text-sm leading-relaxed text-slate-600">{p.rationale}</p>
 
         <div>
-          <div className="stat-label mb-1">Compatible refineries · {p.compatible_count}</div>
+          <div className="stat-label mb-1.5">Refineries this works for · {p.compatible_count}</div>
           <div className="flex flex-wrap gap-1.5">
             {p.compatible_refineries.length ? (
               p.compatible_refineries.map((r) => (
@@ -45,13 +45,13 @@ export function RecommendationCard({ rec }: { rec: Recommendation }) {
                 </Chip>
               ))
             ) : (
-              <span className="text-[12px] text-slate-400">grade check pending / none in shortfall set</span>
+              <span className="text-sm text-slate-400">none of the affected refineries</span>
             )}
           </div>
         </div>
 
         <div className="flex flex-wrap gap-1.5 pt-1">
-          <Chip tone="neutral">load: {p.load_port}</Chip>
+          <Chip tone="neutral">loads at {p.load_port}</Chip>
           {hasSanction && <Chip tone="danger">⚠ sanctions / price-cap flag</Chip>}
           <SimChip />
         </div>
@@ -62,9 +62,9 @@ export function RecommendationCard({ rec }: { rec: Recommendation }) {
 
 function Metric({ label, value, unit }: { label: string; value: string; unit: string }) {
   return (
-    <div className="bg-surface py-2.5">
-      <div className="num text-lg font-bold text-slate-900">{value}</div>
-      <div className="text-[10px] uppercase tracking-wider text-slate-500">
+    <div className="bg-surface py-3">
+      <div className="num text-xl font-bold text-slate-900">{value}</div>
+      <div className="text-xs text-slate-500">
         {label} · {unit}
       </div>
     </div>
