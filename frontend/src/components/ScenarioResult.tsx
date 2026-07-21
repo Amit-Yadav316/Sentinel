@@ -39,22 +39,22 @@ export function ScenarioResultView({ result }: { result: Result }) {
 
       <div className="card p-4">
         <div className="mb-3 flex items-center justify-between">
-          <div className="text-sm font-semibold text-slate-200">Refinery shortfall allocation</div>
+          <div className="text-sm font-semibold text-slate-900">Refinery shortfall allocation</div>
           <Formula text={result.formulas.refinery_shortfall} />
         </div>
         <div className="space-y-2">
           {result.refinery_shortfalls.map((s) => (
             <div key={s.refinery_id} className="flex items-center gap-3">
-              <div className="w-40 shrink-0 truncate text-[13px] text-slate-300">{s.name}</div>
-              <div className="relative h-5 flex-1 overflow-hidden rounded bg-ink-700">
+              <div className="w-40 shrink-0 truncate text-[13px] text-slate-700">{s.name}</div>
+              <div className="relative h-5 flex-1 overflow-hidden rounded bg-slate-100">
                 <div
-                  className="h-full rounded bg-gradient-to-r from-orange-500/70 to-red-500/80"
+                  className="h-full rounded bg-gradient-to-r from-amber-400 to-red-500"
                   style={{ width: `${(s.shortfall_kbd / maxShort) * 100}%` }}
                 />
               </div>
-              <div className="num w-28 shrink-0 text-right text-[13px] text-slate-300">
+              <div className="num w-28 shrink-0 text-right text-[13px] text-slate-700">
                 {s.shortfall_kbd.toFixed(0)} kb/d
-                <span className="ml-1 text-slate-500">({s.shortfall_pct.toFixed(0)}%)</span>
+                <span className="ml-1 text-slate-400">({s.shortfall_pct.toFixed(0)}%)</span>
               </div>
             </div>
           ))}
@@ -77,7 +77,7 @@ function Kpi({
   formula: string;
   tone: "danger" | "warn";
 }) {
-  const color = tone === "danger" ? "text-red-400" : "text-amber-400";
+  const color = tone === "danger" ? "text-red-600" : "text-amber-600";
   return (
     <div className="card p-3.5">
       <div className="flex items-center justify-between">

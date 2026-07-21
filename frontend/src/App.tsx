@@ -39,7 +39,7 @@ export default function App() {
     <div className="flex h-full flex-col">
       <StatusBar />
       <div className="flex min-h-0 flex-1">
-        <nav className="flex w-48 shrink-0 flex-col gap-1 border-r border-ink-600 bg-ink-800/40 p-3">
+        <nav className="flex w-48 shrink-0 flex-col gap-1 border-r border-line bg-surface p-3">
           {NAV.map((n) => {
             const active = screen === n.id;
             const badge = n.id === "recs" && recommendations.length > 0;
@@ -48,7 +48,7 @@ export default function App() {
                 key={n.id}
                 onClick={() => setScreen(n.id)}
                 className={`flex items-center gap-2.5 rounded-lg px-3 py-2 text-left text-[13px] font-medium transition ${
-                  active ? "bg-accent/15 text-accent" : "text-slate-400 hover:bg-ink-700 hover:text-slate-200"
+                  active ? "bg-accent-soft text-accent-600" : "text-slate-500 hover:bg-slate-100 hover:text-slate-800"
                 }`}
               >
                 <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth={1.8}>
@@ -59,8 +59,8 @@ export default function App() {
               </button>
             );
           })}
-          <div className="mt-auto rounded-lg border border-ink-600 bg-ink-700/30 p-2.5 text-[10px] leading-relaxed text-slate-500">
-            <div className="mb-1 font-semibold text-slate-400">Demo path</div>
+          <div className="mt-auto rounded-lg border border-line bg-slate-50 p-2.5 text-[10px] leading-relaxed text-slate-500">
+            <div className="mb-1 font-semibold text-slate-700">Demo path</div>
             Signal → risk climb → auto-scenario → executable recommendation, in under 5 minutes.
           </div>
         </nav>
