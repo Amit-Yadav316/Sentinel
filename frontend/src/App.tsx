@@ -1,0 +1,76 @@
+import { useEffect, useRef, useState } from "react";
+import { useStore } from "./store/store";
+import { StatusBar } from "./components/StatusBar";
+import { MapScreen } from "./screens/MapScreen";
+import { ScenarioScreen } from "./screens/ScenarioScreen";
+import { RecommendationsScreen } from "./screens/RecommendationsScreen";
+
+type Screen = "map" | "scenario" | "recs";
+
+const NAV: { id: Screen; label: string; icon: string }[] = [
+  { id: "map", label: "Corridor Map", icon: "M12 2C8 2 5 5 5 9c0 5 7 13 7 13s7-8 7-13c0-4-3-7-7-7Zm0 9a2 2 0 1 1 0-4 2 2 0 0 1 0 4Z" },
+  { id: "scenario", label: "Scenario Console", icon: "M4 4h16v4H4V4Zm0 6h16v10H4V10Zm3 3v4m4-4v4m4-4v4" },
+  { id: "recs", label: "Recommendations", icon: "M9 11l3 3 8-8M4 12a8 8 0 1 0 16 0 8 8 0 0 0-16 0Z" },
+];
+
+export default function App() {
+  const [screen, setScreen] = useState<Screen>("map");
+  const { loadAll, connect, activeRunId, recommendations, demoRunning } = useStore();
+  const prevRun = useRef<number | null>(null);
+
+  useEffect(() => {
+    loadAll().catch(console.error);
+    connect();
+  }, [loadAll, connect]);
+
+  // During the demo, follow the story: jump to the scenario console when a run
+  // auto-triggers, then surface recommendations shortly after.
+  useEffect(() => {
+    if (activeRunId && activeRunId !== prevRun.current && demoRunning) {
+      setScreen("scenario");
+      const t = setTimeout(() => setScreen("recs"), 3500);
+      prevRun.current = activeRunId;
+      return () => clearTimeout(t);
+    }
+    prevRun.current = activeRunId;
+  }, [activeRunId, demoRunning]);
+
+  return (
+    <div className="flex h-full flex-col">
+      <StatusBar />
+      <div className="flex min-h-0 flex-1">
+        <nav className="flex w-48 shrink-0 flex-col gap-1 border-r border-ink-600 bg-ink-800/40 p-3">
+          {NAV.map((n) => {
+            const active = screen === n.id;
+            const badge = n.id === "recs" && recommendations.length > 0;
+            return (
+              <button
+                key={n.id}
+                onClick={() => setScreen(n.id)}
+                className={`flex items-center gap-2.5 rounded-lg px-3 py-2 text-left text-[13px] font-medium transition ${
+                  active ? "bg-accent/15 text-accent" : "text-slate-400 hover:bg-ink-700 hover:text-slate-200"
+                }`}
+              >
+                <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth={1.8}>
+                  <path d={n.icon} strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
+                <span className="flex-1">{n.label}</span>
+                {badge && <span className="h-1.5 w-1.5 rounded-full bg-accent live-dot" />}
+              </button>
+            );
+          })}
+          <div className="mt-auto rounded-lg border border-ink-600 bg-ink-700/30 p-2.5 text-[10px] leading-relaxed text-slate-500">
+            <div className="mb-1 font-semibold text-slate-400">Demo path</div>
+            Signal → risk climb → auto-scenario → executable recommendation, in under 5 minutes.
+          </div>
+        </nav>
+
+        <main className="min-h-0 flex-1 overflow-auto p-4">
+          {screen === "map" && <MapScreen />}
+          {screen === "scenario" && <ScenarioScreen />}
+          {screen === "recs" && <RecommendationsScreen />}
+        </main>
+      </div>
+    </div>
+  );
+}
