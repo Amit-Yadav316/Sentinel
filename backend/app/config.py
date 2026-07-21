@@ -36,7 +36,7 @@ class Settings(BaseSettings):
     anthropic_model: str = "claude-sonnet-4-6"
     # Free key from https://aistudio.google.com — enables live LLM extraction.
     gemini_api_key: str | None = None
-    gemini_model: str = "gemini-1.5-flash"
+    gemini_model: str = "gemini-2.0-flash"
     # Free key from aisstream.io enables the real live-AIS path (else synthetic).
     aisstream_api_key: str | None = None
 
