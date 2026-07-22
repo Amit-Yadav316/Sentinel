@@ -10,13 +10,13 @@ export function SignalFeed({ items, source }: { items: NewsItem[]; source: strin
   return (
     <div className="card overflow-hidden">
       <div className="flex items-center justify-between border-b border-line px-4 py-3">
-        <span className="text-base font-semibold text-slate-800">In the news</span>
+        <span className="text-base font-semibold text-slate-800">Live Signal Feed</span>
         {live ? (
           <span className="chip border border-emerald-200 bg-emerald-50 text-emerald-700">
-            <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 live-dot" /> live
+            <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 live-dot" /> live · GDELT
           </span>
         ) : (
-          <span className="chip border border-slate-200 bg-slate-100 text-slate-500">sample</span>
+          <span className="chip border border-slate-200 bg-slate-100 text-slate-500">baseline</span>
         )}
       </div>
       <div className="max-h-64 space-y-2 overflow-y-auto p-3">
@@ -46,7 +46,7 @@ export function SignalFeed({ items, source }: { items: NewsItem[]; source: strin
         ))}
       </div>
       <div className="border-t border-line px-4 py-2.5 text-xs text-slate-400">
-        Real headlines, tagged automatically. Shown for context — they don't change the scores.
+        Live headlines classified by the extraction agent · display-only (not scored).
       </div>
     </div>
   );

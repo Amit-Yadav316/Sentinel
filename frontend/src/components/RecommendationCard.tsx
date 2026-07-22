@@ -22,7 +22,7 @@ export function RecommendationCard({ rec }: { rec: Recommendation }) {
           <div className={`num text-xl font-bold ${cheaper ? "text-emerald-600" : "text-amber-600"}`}>
             {fmtUsd(p.cost_delta_usd_bbl)}
           </div>
-          <div className="text-xs text-slate-400">vs. the Gulf barrel</div>
+          <div className="text-xs text-slate-400">cost delta vs. Gulf grade</div>
         </div>
       </div>
 
@@ -36,7 +36,7 @@ export function RecommendationCard({ rec }: { rec: Recommendation }) {
         <p className="text-sm leading-relaxed text-slate-600">{p.rationale}</p>
 
         <div>
-          <div className="stat-label mb-1.5">Refineries this works for · {p.compatible_count}</div>
+          <div className="stat-label mb-1.5">Grade-compatible refineries · {p.compatible_count}</div>
           <div className="flex flex-wrap gap-1.5">
             {p.compatible_refineries.length ? (
               p.compatible_refineries.map((r) => (
@@ -45,13 +45,13 @@ export function RecommendationCard({ rec }: { rec: Recommendation }) {
                 </Chip>
               ))
             ) : (
-              <span className="text-sm text-slate-400">none of the affected refineries</span>
+              <span className="text-sm text-slate-400">no shortfall refineries within tolerance</span>
             )}
           </div>
         </div>
 
         <div className="flex flex-wrap gap-1.5 pt-1">
-          <Chip tone="neutral">loads at {p.load_port}</Chip>
+          <Chip tone="neutral">Load port: {p.load_port}</Chip>
           {hasSanction && <Chip tone="danger">⚠ sanctions / price-cap flag</Chip>}
           <SimChip />
         </div>

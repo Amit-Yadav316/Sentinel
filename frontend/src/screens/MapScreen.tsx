@@ -13,9 +13,10 @@ export function MapScreen() {
   return (
     <div className="mx-auto max-w-[1500px] space-y-5">
       <div>
-        <h1 className="text-2xl font-semibold text-slate-900">Shipping corridors</h1>
+        <h1 className="text-2xl font-semibold text-slate-900">Import Corridor Risk</h1>
         <p className="mt-0.5 text-base text-slate-500">
-          Live risk on the routes that carry India's crude. Tap a corridor to see what's driving it.
+          Live disruption risk across the maritime corridors supplying India's crude. Select a corridor
+          to view its evidence trail.
         </p>
       </div>
 
@@ -24,20 +25,20 @@ export function MapScreen() {
         <div className="space-y-5 lg:col-span-2">
           <div className="card relative h-[460px] overflow-hidden">
             <div className="absolute left-4 top-4 z-10 flex items-center gap-2">
-              <span className="chip border border-line bg-surface/90 text-slate-600">Live risk map</span>
+              <span className="chip border border-line bg-surface/90 text-slate-600">Live corridor risk</span>
               {vesselSource === "live" ? (
                 <span className="chip border border-emerald-200 bg-emerald-50 text-emerald-700">
-                  <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 live-dot" /> live ships · {vessels.length}
+                  <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 live-dot" /> Live AIS · {vessels.length} vessels
                 </span>
               ) : (
                 <span className="chip border border-fuchsia-200 bg-fuchsia-50 text-fuchsia-700">
-                  ships simulated
+                  Vessels: simulated
                 </span>
               )}
             </div>
             {lastEventHeadline && (
               <div className="absolute bottom-4 left-4 right-4 z-10 rounded-lg border border-line bg-surface/95 px-4 py-2.5 text-sm text-slate-700 shadow-sm">
-                <span className="mr-2 font-semibold text-accent">Latest headline</span>
+                <span className="mr-2 font-semibold text-accent">Latest signal</span>
                 {lastEventHeadline}
               </div>
             )}

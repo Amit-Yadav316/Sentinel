@@ -44,9 +44,9 @@ export function StatusBar() {
             <span className="ml-0.5 text-xs font-normal text-slate-400">/bbl</span>
           </div>
         </div>
-        <Stat label="Reserves left" value={sprDays.toFixed(1)} sub="days" />
+        <Stat label="Strategic reserve" value={sprDays.toFixed(1)} sub="days" />
         <div className="text-center">
-          <div className="stat-label">Highest risk</div>
+          <div className="stat-label">Peak corridor risk</div>
           <div className="num text-xl font-bold leading-tight" style={{ color: riskTextColor(maxRisk) }}>
             {maxRisk.toFixed(0)}
           </div>
@@ -60,7 +60,7 @@ export function StatusBar() {
           disabled={demoRunning}
           className="rounded-lg bg-accent px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-accent-600 disabled:opacity-50"
         >
-          {demoRunning ? `Playing… ${demoStep}/${demoTotal}` : "▶ Play the crisis demo"}
+          {demoRunning ? `Running… ${demoStep}/${demoTotal}` : "▶ Run Escalation Demo"}
         </button>
       </div>
     </header>

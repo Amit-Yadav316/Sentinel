@@ -40,7 +40,7 @@ export function BacktestScreen() {
   return (
     <div className="mx-auto max-w-[1200px] space-y-5">
       <div>
-        <h1 className="text-2xl font-semibold text-slate-900">Backtest — did it work on a real crisis?</h1>
+        <h1 className="text-2xl font-semibold text-slate-900">Historical Backtest — June 2025 Escalation</h1>
         <p className="mt-0.5 text-base text-slate-500">
           The <b className="text-slate-700">same risk model</b>, replayed on the June 2025 Israel–Iran /
           Strait-of-Hormuz escalation. Real dated headlines in; Brent overlaid.

@@ -6,7 +6,7 @@ export function EvidencePanel({ risk }: { risk: CorridorRisk | null }) {
   if (!risk) {
     return (
       <div className="card flex items-center justify-center p-8 text-center text-base text-slate-500">
-        Pick a corridor on the map to see why its risk score is where it is.
+        Select a corridor to view its risk evidence trail.
       </div>
     );
   }
@@ -17,7 +17,7 @@ export function EvidencePanel({ risk }: { risk: CorridorRisk | null }) {
       <div className="border-b border-line p-5">
         <div className="flex items-start justify-between">
           <div>
-            <div className="text-sm text-slate-500">Risk level</div>
+            <div className="text-sm text-slate-500">Corridor risk</div>
             <div className="mt-0.5 text-lg font-semibold text-slate-900">{risk.name}</div>
           </div>
           <div className="text-right">
@@ -36,14 +36,12 @@ export function EvidencePanel({ risk }: { risk: CorridorRisk | null }) {
       </div>
 
       <div className="px-5 pb-2 pt-3 text-sm font-medium text-slate-600">
-        {risk.contributions.length > 0
-          ? `What's driving this — ${risk.contributions.length} recent headline${risk.contributions.length > 1 ? "s" : ""}`
-          : "What's driving this"}
+        Evidence trail{risk.contributions.length > 0 ? ` · ${risk.contributions.length} signals` : ""}
       </div>
 
       <div className="max-h-[280px] space-y-2.5 overflow-y-auto px-5 pb-5">
         {risk.contributions.length === 0 && (
-          <div className="text-base text-slate-500">All quiet — no active threats on this route right now.</div>
+          <div className="text-base text-slate-500">No active events — resting at structural baseline.</div>
         )}
         {risk.contributions.map((c, i) => (
           <div key={i} className="rounded-lg border border-line bg-slate-50/70 p-3">

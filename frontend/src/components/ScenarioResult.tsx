@@ -38,7 +38,7 @@ export function ScenarioResultView({ result }: { result: Result }) {
       </div>
 
       <div>
-        <div className="mb-2 text-sm font-medium text-slate-500">Ripple into the wider economy</div>
+        <div className="mb-2 text-sm font-medium text-slate-500">Downstream economic impact</div>
         <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
           <Kpi
             label="Annual import bill"
