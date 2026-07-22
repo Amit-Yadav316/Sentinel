@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { useStore } from "./store/store";
 import { StatusBar } from "./components/StatusBar";
 import { MapScreen } from "./screens/MapScreen";
@@ -15,25 +15,21 @@ const NAV: { id: Screen; label: string; icon: string }[] = [
 
 export default function App() {
   const [screen, setScreen] = useState<Screen>("map");
-  const { loadAll, connect, activeRunId, recommendations, demoRunning } = useStore();
-  const prevRun = useRef<number | null>(null);
+  const { loadAll, connect, activeRunId, recommendations } = useStore();
 
   useEffect(() => {
     loadAll().catch(console.error);
     connect();
   }, [loadAll, connect]);
 
-  // During the demo, follow the story: jump to the scenario console when a run
-  // auto-triggers, then surface recommendations shortly after.
-  useEffect(() => {
-    if (activeRunId && activeRunId !== prevRun.current && demoRunning) {
-      setScreen("scenario");
-      const t = setTimeout(() => setScreen("recs"), 3500);
-      prevRun.current = activeRunId;
-      return () => clearTimeout(t);
-    }
-    prevRun.current = activeRunId;
-  }, [activeRunId, demoRunning]);
+  // When the demo auto-runs a scenario, we DON'T yank the screen away — you
+  // stay in control and click across yourself. The nav items just pulse to
+  // show fresh results are waiting.
+  function badgeFor(id: Screen): boolean {
+    if (id === "scenario") return activeRunId !== null;
+    if (id === "recs") return recommendations.length > 0;
+    return false;
+  }
 
   return (
     <div className="flex h-full flex-col">
@@ -42,7 +38,6 @@ export default function App() {
         <nav className="flex w-48 shrink-0 flex-col gap-1 border-r border-line bg-surface p-3">
           {NAV.map((n) => {
             const active = screen === n.id;
-            const badge = n.id === "recs" && recommendations.length > 0;
             return (
               <button
                 key={n.id}
@@ -55,7 +50,7 @@ export default function App() {
                   <path d={n.icon} strokeLinecap="round" strokeLinejoin="round" />
                 </svg>
                 <span className="flex-1">{n.label}</span>
-                {badge && <span className="h-1.5 w-1.5 rounded-full bg-accent live-dot" />}
+                {!active && badgeFor(n.id) && <span className="h-1.5 w-1.5 rounded-full bg-accent live-dot" />}
               </button>
             );
           })}
