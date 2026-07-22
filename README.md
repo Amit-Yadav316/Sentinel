@@ -9,10 +9,10 @@ disruption risk score, **simulates** named disruption scenarios with fully
 transparent math, and **decides** — emitting ranked, grade-checked, executable
 procurement rerouting recommendations.
 
-> **Core claim:** signal → executable recommendation in under 5 minutes, running
-> entirely offline from cached data.
+> **Core claim:** signal → executable recommendation in under 5 minutes. Runs
+> offline from cache, and upgrades to live data (Brent, AIS, news) when online.
 
-![loop](docs/architecture.md)
+See the **[architecture diagram and write-up →](docs/architecture.md)**
 
 ---
 
@@ -61,13 +61,16 @@ all of the above on systems that have GNU make.
 
 ## What the demo shows
 
-1. **Corridor Map** — corridor arcs colored by live risk, synthetic tanker
-   dots, Brent strip. Click a corridor → the **evidence trail** (headlines,
-   type weights, time-decay) that produced the score.
+1. **Corridor Map** — corridor arcs colored by live risk over a **real coastline
+   basemap**, tanker positions (live AIS or labelled synthetic), a Brent strip,
+   and a **live news feed** classified by the extraction agent. Click a corridor
+   → the **evidence trail** (headlines, weights, time-decay) behind the score.
 2. **Escalation** — 9 replayed headlines drive Hormuz past the auto-trigger
    threshold (70); the `hormuz_50` scenario fires automatically.
 3. **Scenario Console** — supply gap, SPR runway, landed-cost delta, retail
-   pass-through. **Every number has an ⓘ revealing its exact formula.**
+   pass-through, plus the **wider-economy ripple** (import bill, GDP drag,
+   current-account, power-sector stress). **Every number has an ⓘ revealing its
+   exact formula.**
 4. **Recommendations** — 3 ranked reroute cards (volume, source, route, ETA,
    $/bbl delta, grade-compatible refineries, sanctions/simulated caveats) with a
    one-click **procurement brief** export.
@@ -76,7 +79,7 @@ all of the above on systems that have GNU make.
 
 ## Testing
 ```bash
-cd backend && uv run pytest -q     # 22 tests
+cd backend && uv run pytest -q     # 27 tests
 ```
 The scenario math (`sim/flow_model.py`) and risk model (`agents/risk_scoring.py`)
 are unit-tested against **hand-computed expected values** — see the docstrings

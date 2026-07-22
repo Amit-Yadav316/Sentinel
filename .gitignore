@@ -28,3 +28,7 @@ Thumbs.db
 /CLAUDE.md
 /PLAN.md
 backend/test_gemini.py
+# Deck is maintained in Canva; keep the local HTML/PDF exports off GitHub
+docs/deck.html
+docs/Sentinel-deck.pdf
+docs/pitch-script.md
