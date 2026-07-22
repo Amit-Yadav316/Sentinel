@@ -74,12 +74,15 @@ all of the above on systems that have GNU make.
 4. **Recommendations** — 3 ranked reroute cards (volume, source, route, ETA,
    $/bbl delta, grade-compatible refineries, sanctions/simulated caveats) with a
    one-click **procurement brief** export.
+5. **Backtest** — the same risk model replayed on the **June 2025 Israel–Iran /
+   Hormuz escalation**: the score crosses the alert threshold as the strikes
+   begin and stays critical through Brent's run-up — model vs price, overlaid.
 
 ---
 
 ## Testing
 ```bash
-cd backend && uv run pytest -q     # 27 tests
+cd backend && uv run pytest -q     # 31 tests
 ```
 The scenario math (`sim/flow_model.py`) and risk model (`agents/risk_scoring.py`)
 are unit-tested against **hand-computed expected values** — see the docstrings

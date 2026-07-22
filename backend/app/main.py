@@ -10,7 +10,7 @@ from __future__ import annotations
 from fastapi import FastAPI, WebSocket, WebSocketDisconnect
 from fastapi.middleware.cors import CORSMiddleware
 
-from app.api.routers import corridors, health, recommendations, scenarios
+from app.api.routers import backtest, corridors, health, recommendations, scenarios
 from app.api.ws import manager
 from app.config import get_settings
 from app.db import init_db
@@ -32,6 +32,7 @@ def create_app() -> FastAPI:
     app.include_router(corridors.router)
     app.include_router(scenarios.router)
     app.include_router(recommendations.router)
+    app.include_router(backtest.router)
 
     @app.on_event("startup")
     def _startup() -> None:

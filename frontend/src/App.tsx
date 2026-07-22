@@ -4,13 +4,15 @@ import { StatusBar } from "./components/StatusBar";
 import { MapScreen } from "./screens/MapScreen";
 import { ScenarioScreen } from "./screens/ScenarioScreen";
 import { RecommendationsScreen } from "./screens/RecommendationsScreen";
+import { BacktestScreen } from "./screens/BacktestScreen";
 
-type Screen = "map" | "scenario" | "recs";
+type Screen = "map" | "scenario" | "recs" | "backtest";
 
 const NAV: { id: Screen; label: string; icon: string }[] = [
   { id: "map", label: "Corridor map", icon: "M12 2C8 2 5 5 5 9c0 5 7 13 7 13s7-8 7-13c0-4-3-7-7-7Zm0 9a2 2 0 1 1 0-4 2 2 0 0 1 0 4Z" },
   { id: "scenario", label: "What-if scenarios", icon: "M4 4h16v4H4V4Zm0 6h16v10H4V10Zm3 3v4m4-4v4m4-4v4" },
   { id: "recs", label: "What to buy", icon: "M9 11l3 3 8-8M4 12a8 8 0 1 0 16 0 8 8 0 0 0-16 0Z" },
+  { id: "backtest", label: "Backtest", icon: "M3 3v18h18M7 15l3-4 3 3 5-7" },
 ];
 
 export default function App() {
@@ -64,6 +66,7 @@ export default function App() {
           {screen === "map" && <MapScreen />}
           {screen === "scenario" && <ScenarioScreen />}
           {screen === "recs" && <RecommendationsScreen />}
+          {screen === "backtest" && <BacktestScreen />}
         </main>
       </div>
     </div>

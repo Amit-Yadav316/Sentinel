@@ -1,6 +1,7 @@
 import { create } from "zustand";
 import { api, connectRiskStream } from "../lib/api";
 import type {
+  Backtest,
   Corridor,
   CorridorRisk,
   NewsItem,
@@ -17,6 +18,7 @@ interface StoreState {
   vesselSource: "synthetic" | "live";
   news: NewsItem[];
   newsSource: string;
+  backtest: Backtest | null;
   brent: number;
   brentSeries: { date: string; value: number }[];
   brentSource: "cache" | "live";
@@ -50,6 +52,7 @@ export const useStore = create<StoreState>((set, get) => ({
   vesselSource: "synthetic",
   news: [],
   newsSource: "baseline",
+  backtest: null,
   brent: 0,
   brentSeries: [],
   brentSource: "cache",
@@ -110,6 +113,11 @@ export const useStore = create<StoreState>((set, get) => ({
     api
       .newsLive()
       .then((r) => set({ news: r.items, newsSource: r.source }))
+      .catch(() => {});
+    // Historical backtest (cheap, cached on the backend).
+    api
+      .backtest()
+      .then((b) => set({ backtest: b }))
       .catch(() => {});
   },
 

@@ -41,6 +41,20 @@ export interface NewsItem {
   confidence: number;
 }
 
+export interface Backtest {
+  title: string;
+  threshold: number;
+  risk_series: { date: string; score: number }[];
+  brent_series: { date: string; value: number }[];
+  brent_note: string;
+  headlines: { date: string; headline: string; event_type: string; corridor: string | null; severity: number }[];
+  risk_cross_date: string | null;
+  peak_risk: { date: string; score: number };
+  brent_spike: { date: string; pct: number };
+  brent_peak: { date: string; value: number };
+  lead_days: number | null;
+}
+
 export interface Vessel {
   mmsi: string;
   name: string;
