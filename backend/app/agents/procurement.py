@@ -10,7 +10,7 @@ Pipeline per candidate (crude, route) from an *unaffected* corridor:
      refineries, and caveats (sanctions flag, simulated-availability chip).
 
 The "RAG" rationale is generated deterministically in mock mode (a compat-aware
-template); in live mode it is a one-line Claude rationale. Vector search over the
+template); in live mode it is a one-line LLM rationale. Vector search over the
 assay corpus is stubbed to an in-process cosine ranking.
 """
 

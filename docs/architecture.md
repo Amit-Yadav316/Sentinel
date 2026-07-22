@@ -17,7 +17,7 @@ flowchart TB
     OFAC["OFAC SDN CSV<br/>sanctions flags"]
   end
 
-  subgraph Agents["Agent Layer (mock-first, Claude in live mode)"]
+  subgraph Agents["Agent Layer (mock-first, hosted LLM in live mode)"]
     A1["1 · SignalExtractionAgent<br/>LLM classify → {type, corridor, severity, entities}"]
     A2["2 · RiskScoringAgent<br/>deterministic weighted + time-decay model"]
     A3["3 · ScenarioAgent<br/>parameterized flow model"]

@@ -6,9 +6,9 @@ Three paths, selected by ``LLM_MODE`` + ``LLM_PROVIDER``:
   deterministic result. Keeps the whole app runnable offline.
 * **gemini** — Google Gemini via the free-tier REST endpoint (``httpx``, no SDK).
   Uses ``response_mime_type: application/json`` for structured output.
-* **claude** — Anthropic Messages API (only imported when used).
+* **anthropic** — Anthropic Messages API (only imported when used).
 
-``LLM_PROVIDER=auto`` prefers Gemini if a Gemini key is present, else Claude,
+``LLM_PROVIDER=auto`` prefers Gemini if a Gemini key is present, else Anthropic,
 else mock. Any live failure falls back to ``mock_fn`` so a demo never breaks.
 """
 
@@ -32,15 +32,15 @@ def _resolve_provider(s: Settings) -> str | None:
     """Return the concrete provider to use, or None for mock."""
     if s.llm_provider == "gemini":
         return "gemini" if s.gemini_api_key else None
-    if s.llm_provider == "claude":
-        return "claude" if s.anthropic_api_key else None
+    if s.llm_provider == "anthropic":
+        return "anthropic" if s.anthropic_api_key else None
     if s.llm_provider == "mock":
         return None
     # auto
     if s.gemini_api_key:
         return "gemini"
     if s.anthropic_api_key:
-        return "claude"
+        return "anthropic"
     return None
 
 
@@ -70,7 +70,7 @@ def _gemini_call(s: Settings, system: str, user: str, schema: type[T]) -> T:
     return _extract_json(text, schema)
 
 
-def _claude_call(s: Settings, system: str, user: str, schema: type[T]) -> T:
+def _anthropic_call(s: Settings, system: str, user: str, schema: type[T]) -> T:
     from anthropic import Anthropic  # type: ignore
 
     client = Anthropic(api_key=s.anthropic_api_key)
@@ -104,7 +104,7 @@ def structured_call(
     if provider is None:
         return mock_fn()
 
-    call = _gemini_call if provider == "gemini" else _claude_call
+    call = _gemini_call if provider == "gemini" else _anthropic_call
     for attempt in range(max_retries):
         try:
             return call(settings, system, user, schema)

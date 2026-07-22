@@ -25,10 +25,10 @@ Thumbs.db
 !data/cache/
 
 # Local-only working notes / helpers (kept on disk, not published)
-/CLAUDE.md
 /PLAN.md
 backend/test_gemini.py
-# Deck exports (HTML/PDF) and the pitch script stay local, off GitHub
+# Deck exports (HTML/PDF), pitch script and deck notes stay local, off GitHub
 docs/deck.html
 docs/Sentinel-deck.pdf
 docs/pitch-script.md
+docs/deck-notes.md

@@ -30,8 +30,8 @@ class Settings(BaseSettings):
     data_mode: str = "cache"        # cache | live
 
     # LLM provider for the extraction step. "auto" picks Gemini if a Gemini key
-    # is set, else Claude if an Anthropic key is set, else falls back to mock.
-    llm_provider: str = "auto"      # auto | gemini | claude | mock
+    # is set, else Anthropic if a key is set, else falls back to mock.
+    llm_provider: str = "auto"      # auto | gemini | anthropic | mock
     anthropic_api_key: str | None = None
     anthropic_model: str = "claude-sonnet-4-6"
     # Free key from https://aistudio.google.com — enables live LLM extraction.

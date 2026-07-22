@@ -95,7 +95,7 @@ in `tests/test_flow_model.py` and `tests/test_risk_scoring.py`.
 | Signal | Source | Demo mode |
 |---|---|---|
 | News events | GDELT 2.0 DOC API (keyless) | **live** classified feed (display) + **scripted** escalation for the demo climax |
-| LLM extraction | Gemini free-tier / Claude / mock | provider-agnostic; `LLM_MODE=mock` (offline) by default, `LLM_PROVIDER=auto` for a free live LLM |
+| LLM extraction | Gemini free-tier / Anthropic / mock | provider-agnostic; `LLM_MODE=mock` (offline) by default, `LLM_PROVIDER=auto` for a free live LLM |
 | Brent price | Yahoo Finance chart API (`BZ=F`) | **live** on load (real-time quote, ~1s) with instant cache fallback |
 | Sanctions | OFAC SDN list | **cached** flag snapshot |
 | Vessel positions | AISStream.io (free key) | **live** real tankers in Hormuz/Bab-el-Mandeb/W-coast boxes; grounded **synthetic** fallback (40 tankers in real maritime zones) — labelled *simulated* |
